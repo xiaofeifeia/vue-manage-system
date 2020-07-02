@@ -3,6 +3,12 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
+
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
+
 export default new Router({
     routes: [
         {
@@ -96,6 +102,68 @@ export default new Router({
                     path: '/403',
                     component: () => import(/* webpackChunkName: "403" */ '../page/403.vue'),
                     meta: { title: '403' }
+                }, {
+                    path: '/user',
+                    component: () => import('../page/User.vue'),
+                    meta: { title: '用户管理' }
+                }, {
+                    path: '/brand',
+                    component: () => import('../page/goods/Brand.vue'),
+                    meta: { title: '品牌管理' }
+                }, {
+                    path: '/category1',
+                    component: () => import('../page/category/Category1.vue'),
+                    meta: { title: '一级分类' }
+                }, {
+                    path: '/category2',
+                    component: () => import('../page/category/Category2.vue'),
+                    meta: { title: '二级分类' }
+                }, {
+                    path: '/category3',
+                    component: () => import('../page/category/Category3.vue'),
+                    meta: { title: '三级分类' }
+                }, {
+                    path: '/template',
+                    component: () => import('../page/goods/Template.vue'),
+                    meta: {
+                        title: '模板管理'
+                    }
+                }, {
+                    path: '/spec',
+                    component: () => import('../page/goods/Spec.vue'),
+                    meta: {
+                        title: '规格列表'
+                    }
+                }, {
+                    path: '/para',
+                    component: () => import('../page/goods/Para.vue'),
+                    meta: {
+                        title: '参数列表'
+                    }
+                }, {
+                    path: '/addGoodsCategory',
+                    component: () => import('../page/goods/AddGoodsCategory.vue'),
+                    meta: {
+                        title: '添加商品分类'
+                    }
+                }, {
+                    path: '/addGoodsInfo',
+                    component: () => import('../page/goods/AddGoodsInfo.vue'),
+                    meta: {
+                        title: '添加商品信息'
+                    }
+                }, {
+                    path: '/addGoodsAttr',
+                    component: () => import('../page/goods/AddGoodsAttr.vue'),
+                    meta: {
+                        title: '添加商品属性'
+                    }
+                }, {
+                    path: '/goods',
+                    component: () => import('../page/goods/Goods.vue'),
+                    meta: {
+                        title: '商品列表'
+                    }
                 }
             ]
         },

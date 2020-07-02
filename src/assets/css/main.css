@@ -3,10 +3,7 @@
     padding: 0;
 }
 
-html,
-body,
-#app,
-.wrapper {
+html, body, #app, .wrapper {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -20,10 +17,9 @@ a {
     text-decoration: none
 }
 
-
 .content-box {
     position: absolute;
-    left: 250px;
+    left: 230px;
     right: 0;
     top: 70px;
     bottom: 0;
@@ -82,13 +78,11 @@ a {
     margin-bottom: 20px;
 }
 
-.move-enter-active,
-.move-leave-active {
+.move-enter-active, .move-leave-active {
     transition: opacity .5s;
 }
 
-.move-enter,
-.move-leave {
+.move-enter, .move-leave {
     opacity: 0;
 }
 
@@ -102,8 +96,7 @@ a {
     text-align: center;
 }
 
-.el-time-panel__content::after,
-.el-time-panel__content::before {
+.el-time-panel__content::after, .el-time-panel__content::before {
     margin-top: -7px;
 }
 
