@@ -164,6 +164,18 @@ export default new Router({
                     meta: {
                         title: '商品列表'
                     }
+                }, {
+                    path: '/goodsAudit',
+                    component: () => import('../page/goods/GoodsAudit.vue'),
+                    meta: {
+                        title: '商品审核'
+                    }
+                }, {
+                    path: '/goodView',
+                    component: () => import('../page/goods/GoodsView.vue'),
+                    meta: {
+                        title: '商品查看'
+                    }
                 }
             ]
         },

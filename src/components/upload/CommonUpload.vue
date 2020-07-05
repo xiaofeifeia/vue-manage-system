@@ -4,10 +4,10 @@
             <li v-for="(item,index) in fileList" :key="index">
                 <el-image :src="item"></el-image>
                 <div class="opr">
-                    <span v-if="index===firstIndex">商品主图</span>
+                    <span v-if="index===fileIndex">商品主图</span>
                     <a
                         href="javascript:void(0);"
-                        v-if="index!==firstIndex"
+                        v-if="index!==fileIndex"
                         @click="setFirst(index)"
                     >设置主图</a>
                     <a href="javascript:void(0);" @click="deleteImages(index)">删除图片</a>
@@ -19,7 +19,6 @@
                 <label class="el-form-item__label">上传图片</label>
                 <el-upload
                     action="http://localhost:8874/upload"
-                    :on-remove="handleUploadRemove"
                     :on-success="handleUploadSuccess"
                     :before-upload="handleUploadBefore"
                     :show-file-list="false"
@@ -39,26 +38,39 @@ export default {
     name: 'commonUpload',
     data() {
         return {
-            limitSize: 5
+            limitSize: 5,
+            fileList: this.imageList,
+            fileIndex: this.imageIndex
         };
     },
 
     props: {
-        fileList: {
+        imageList: {
             type: Array,
             default: []
         },
-        firstIndex: {
+        imageIndex: {
             type: Number,
             default: 0
         }
     },
+    watch: {
+        imageList(val) {
+            this.fileList = val;
+        },
+        imageIndex(val) {
+            this.fileIndex = val;
+        }
+    },
     created() {},
     methods: {
-        handleUploadRemove(file, fileList) {
-            this.fileList = [];
-        },
         handleUploadSuccess(res) {
+            this.fileList = [
+                ...this.fileList,
+                'https://m.360buyimg.com/mobilecms/s720x720_jfs/t22861/8/2449951226/155000/42b9bdd5/5b7fd79cN2223f4a5.jpg!q70.jpg.webp'
+            ];
+
+            this.$emit('get-files', this.fileList, this.fileIndex); //向父组件传递图片数组
             //后台返回数据
             // if (res.code === 200) {
             //     this.fileList.push(res.data);
@@ -70,16 +82,11 @@ export default {
             // }
         },
         handleUploadBefore(file) {
-            if (this.fileList.length >= this.limitSize) {
+            if (this.imageList.length >= this.limitSize) {
                 this.$message.error('只能上传5张图片');
                 return true;
             }
 
-            this.fileList.push(
-                'https://m.360buyimg.com/mobilecms/s720x720_jfs/t17740/358/404123864/279617/af7f868a/5a742b3cNabe4a8dc.jpg!q70.jpg.webp'
-            );
-
-            this.$emit('get-files', this.fileList, this.firstIndex); //向父组件传递图片数组
             const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
             const isLt1M = file.size / 1024 / 1024 < 1;
 
@@ -94,14 +101,14 @@ export default {
             return true;
         },
         setFirst(index) {
-            this.firstIndex = index;
+            this.fileIndex = index;
         },
         deleteImages(index) {
             if (this.fileList.length > 0) {
                 this.fileList.splice(index, 1);
             }
-            if (this.fileList.length < this.firstIndex + 1) {
-                this.firstIndex = this.fileList.length - 1;
+            if (this.fileList.length < this.fileIndex + 1) {
+                this.fileIndex = this.fileList.length - 1;
             }
         }
     }

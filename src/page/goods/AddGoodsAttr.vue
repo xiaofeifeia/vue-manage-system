@@ -4,7 +4,7 @@
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
                     <i class="el-icon-lx-cascades"></i>
-                    添加商品属性
+                    {{goods.spu.id?'修改':'添加'}}商品属性
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -35,6 +35,7 @@
                                 v-for="(val,index) in item.list"
                                 :label="val"
                                 :key="index"
+                                v-model="goods.spu.specItems[item.name]"
                                 @change="specChange(item.name,val,$event)"
                             >{{val}}</el-checkbox>
                         </el-form-item>
@@ -155,7 +156,7 @@
                                         <td colspan="3" rowspan="1" class="left">
                                             <el-select
                                                 placeholder="请选择"
-                                                v-model="paraItems[p.name]"
+                                                v-model="goods.spu.paraItems[p.name]"
                                             >
                                                 <el-option
                                                     v-for="(val,index) in p.list"
@@ -172,7 +173,11 @@
                             </table>
                         </div>
                     </div>
-                    <common-upload :file-list="goods.spu.imageList" @get-files="getSpuImageList"></common-upload>
+                    <common-upload
+                        :image-list="goods.spu.imageList"
+                        :image-index="goods.spu.firstIndex"
+                        @get-files="getSpuImageList"
+                    ></common-upload>
                 </el-form>
                 <div class="myEditor">
                     <quill-editor
@@ -193,14 +198,18 @@
             </div>
             <el-divider></el-divider>
             <el-dialog title="上传图片" :visible.sync="showImageDialog" width="58%">
-                <common-upload :file-list="skuImageList" @get-files="getSkuImageList"></common-upload>
+                <common-upload
+                    :image-list="skuImageList"
+                    :image-index="firstIndex"
+                    @get-files="getSkuImageList"
+                ></common-upload>
             </el-dialog>
         </div>
     </div>
 </template>
 
 <script>
-import { listCategoryByParentId, listSpecByTemplateId, listParaByTemplateId, createGoods } from '../../api/goods';
+import { listCategoryByParentId, listSpecByTemplateId, listParaByTemplateId, createOrUpdateGoods } from '../../api/goods';
 import { listAllTemplate } from '../../api/template';
 import { setCookie, getCookie, delCookie } from '../../utils/cookie.js';
 import 'quill/dist/quill.core.css';
@@ -221,11 +230,11 @@ export default {
                 sn: [],
                 weight: []
             },
-            paraItems: {},
             allTemplate: [],
             allSpec: [],
             allPara: [],
             skuIndex: 0, //默认点击sku的下标
+            firstIndex: 0, //默认点击sku的下标
             skuImageList: [], //接收子组件返回的图片列表（公共上传组件）
             showImageDialog: false,
             checkSpecNames: [],
@@ -258,11 +267,49 @@ export default {
         let goodsStr = getCookie('goods');
         if (goodsStr) {
             this.goods = JSON.parse(goodsStr);
+            if (this.goods.skus) {
+                this.iterSku2SkuBaseInfo();
+            } else {
+                this.goods.skus = [];
+            }
+            if (this.goods.spu.specItems) {
+                //遍历
+                let allList = [];
+                if (typeof this.goods.spu.specItems === 'string') {
+                    this.goods.spu.specItems = JSON.parse(this.goods.spu.specItems);
+                }
+                for (var key in this.goods.spu.specItems) {
+                    this.checkSpecNames.splice(0, 0, key); //放入队头
+                    this.specTableColums.splice(0, 0, { label: key, prop: key }); //放入队头
+                    allList.splice(0, 0, this.goods.spu.specItems[key]);
+                }
+                //求笛卡尔积
+                let resultList = allList.reduce((last, current) => {
+                    const array = [];
+                    last.forEach(par1 => {
+                        current.forEach(par2 => {
+                            array.push(par1 + '_' + par2);
+                        });
+                    });
+                    return array;
+                });
+                resultList.forEach(res => {
+                    this.checkSpecDatas.push(res.split('_'));
+                });
+            } else {
+                this.goods.spu.specItems = {};
+            }
+            if (this.goods.spu.paraItems && typeof this.goods.spu.paraItems === 'string') {
+                this.goods.spu.paraItems = JSON.parse(this.goods.spu.paraItems);
+            } else {
+                this.goods.spu.paraItems = {};
+            }
+            if (this.goods.spu.images && this.goods.spu.images.length > 0) {
+                this.goods.spu.imageList = this.goods.spu.images.split(',');
+            } else {
+                this.spuImageList = [];
+            }
         }
-        this.goods.spu.specItems = {};
-        this.goods.spu.paraItems = {};
-        this.goods.spu.imageList = [];
-        this.goods.skus = [];
 
         this.listAllTemplate();
         this.listSpecByTemplateId(this.goods.spu.templateId);
@@ -280,6 +327,19 @@ export default {
             if (images) {
                 this.goods.skus[this.skuIndex].imageList = images;
                 this.goods.skus[this.skuIndex].firstIndex = firstIndex | 0;
+            }
+        },
+        iterSku2SkuBaseInfo() {
+            for (let i = 0; i < this.goods.skus.length; i++) {
+                const sku = this.goods.skus[i];
+                for (var key in this.skuBaseInfo) {
+                    this.skuBaseInfo[key].push(sku[key]);
+                }
+                if (this.goods.skus[i].images) {
+                    //处理图片
+                    this.goods.skus[i].imageList = this.goods.skus[i].images.split(',');
+                    this.goods.skus[i].firstIndex = this.goods.skus[i].imageList.indexOf(this.goods.skus[i].image);
+                }
             }
         },
         listAllTemplate() {
@@ -316,45 +376,7 @@ export default {
         handleClick(row) {
             //
         },
-        submitGoods() {
-            this.goods.spu.paraItems = JSON.stringify(this.paraItems);
-            this.goods.spu.specItems = JSON.stringify(this.goods.spu.specItems);
-            this.goods.spu.images = this.concatImages(this.goods.spu.imageList);
-            this.goods.spu.image = this.goods.spu.imageList[this.goods.spu.firstIndex];
-            for (let i = 0; i < this.goods.skus.length; i++) {
-                this.goods.skus[i].images = this.concatImages(this.goods.skus[i].imageList);
-                this.goods.skus[i].image = this.goods.skus[i].imageList[this.goods.skus[i].firstIndex];
-                //先整合category到sku
-                this.goods.skus[i] = Object.assign(this.goods.skus[i], this.goods.category);
-                //赋值sku信息
-                for (let key in this.skuBaseInfo) {
-                    this.goods.skus[i][key] = this.skuBaseInfo[key][i];
-                }
-                this.goods.skus[i].spec = JSON.stringify(this.goods.skus[i].spec);
-            }
-            // 写入cookie
-            setCookie('goods', JSON.stringify(this.goods));
-            createGoods(this.goods).then(res => {
-                if (res.code === 200) {
-                    this.$message.success('创建成功');
-                } else {
-                    this.$message.error(res.message);
-                }
-            });
-        },
-        //处理images，转成逗号隔开json字符串
-        concatImages(imageList) {
-            let images = '';
-            imageList.forEach(t => {
-                images += ',';
-            });
-            if (images) {
-                images = images.substring(0, images.length - 1);
-            }
-            return images;
-        },
         specChange(name, value, check) {
-            this.checkSpecDatas = [];
             if (!this.goods.spu.specItems[name]) {
                 this.goods.spu.specItems[name] = [];
             }
@@ -364,16 +386,33 @@ export default {
                     this.checkSpecNames.splice(0, 0, name); //放入队头
                     this.specTableColums.splice(0, 0, { label: name, prop: name }); //放入队头
                 }
-                this.goods.spu.specItems[name].splice(0, 0, value); //放入队头
+                if (this.goods.spu.specItems[name].indexOf(value) === -1) {
+                    this.goods.spu.specItems[name].splice(0, 0, value); //放入队头
+                }
             } else {
                 //取消
-                let index = this.goods.spu.specItems[name].indexOf(value);
-                this.goods.spu.specItems[name].splice(index, 1);
                 if (this.goods.spu.specItems[name].length === 0) {
                     let nameIndex = this.checkSpecNames.indexOf(name);
                     this.specTableColums.splice(nameIndex, 1); //移除列
+                    this.checkSpecNames.splice(nameIndex, 1);
+                    delete this.goods.spu.specItems[name];
+                    //删除sku中的spec属性
+                    if (this.goods.skus && this.goods.skus.length > 0) {
+                        let skuArr = [];
+                        this.goods.skus.forEach(sku => {
+                            if (typeof sku.spec === 'string') {
+                                sku.spec = JSON.parse(sku.spec);
+                            }
+                            delete sku.spec[name];
+                            skuArr.push(sku);
+                        });
+                        this.goods.skus = skuArr;
+                    }
                 }
             }
+            this.iterSpecItems(check);
+        },
+        iterSpecItems(check) {
             //遍历
             let allList = [];
             for (let name in this.goods.spu.specItems) {
@@ -389,25 +428,105 @@ export default {
                 });
                 return array;
             });
-            resultList.forEach(res => {
-                this.checkSpecDatas.push(res.split('_'));
-            });
-            this.goods.skus = [];
-            //生成skus
-            for (let i = 0; i < this.checkSpecDatas.length; i++) {
-                let sku = { images: [], spec: {} };
-                for (let j = 0; j < this.checkSpecDatas[i].length; j++) {
-                    sku.spec[this.checkSpecNames[j]] = this.checkSpecDatas[i][j];
+
+            this.checkSpecDatas = [];
+
+            let containSpecArr = [];
+
+            this.goods.skus.forEach(sku => {
+                let str = '';
+                let spec = sku.spec;
+                if (typeof spec === 'string') {
+                    spec = JSON.parse(sku.spec);
                 }
-                this.goods.skus.push(sku);
+                for (let index in this.checkSpecNames) {
+                    str += spec[this.checkSpecNames[index]] + '_';
+                }
+                if (str) {
+                    containSpecArr.push(str.substring(0, str.length - 1));
+                }
+            });
+            let skusArr = []; //再取消勾选的时候，要重新设置skus
+            resultList.forEach(res => {
+                const ind = containSpecArr.indexOf(res);
+                this.checkSpecDatas.push(res.split('_'));
+                if (check) {
+                    if (ind === -1) {
+                        //生成skus
+                        let sku = { images: {}, imageList: [], spec: {} };
+                        for (let j = 0; j < res.split('_').length; j++) {
+                            sku.spec[this.checkSpecNames[j]] = res.split('_')[j];
+                        }
+                        this.goods.skus.push(sku);
+                    }
+                } else {
+                    if (ind !== -1) {
+                        skusArr.push(this.goods.skus[ind]);
+                    }
+                }
+            });
+            if (!check) {
+                this.goods.skus = skusArr;
+                for (let key in this.skuBaseInfo) {
+                    this.skuBaseInfo[key] = [];
+                    this.goods.skus.forEach(sku => {
+                        if (sku.hasOwnProperty(key) && sku[key]) {
+                            this.skuBaseInfo[key].push(sku[key]);
+                        }
+                    });
+                }
             }
         },
         handleUploadSkuImage(index) {
+            this.skuImageList = [];
             if (this.goods.skus[index].imageList) {
                 this.skuImageList = this.goods.skus[index].imageList;
             }
             this.skuIndex = index;
             this.showImageDialog = true;
+        },
+        submitGoods() {
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.goods.spu.paraItems = this.goods.spu.paraItems;
+            this.goods.spu.specItems = this.goods.spu.specItems;
+            if (this.goods.spu.imageList && this.goods.spu.imageList.length > 0) {
+                this.goods.spu.images = this.goods.spu.imageList.join(',');
+                this.goods.spu.image = this.goods.spu.imageList[this.goods.spu.firstIndex];
+            }
+
+            for (let i = 0; i < this.goods.skus.length; i++) {
+                if (this.goods.skus[i].imageList && this.goods.skus[i].imageList.length > 0) {
+                    this.goods.skus[i].images = this.goods.skus[i].imageList.join(',');
+                    this.goods.skus[i].image = this.goods.skus[i].imageList[this.goods.skus[i].firstIndex];
+                }
+
+                //先整合category到sku
+                this.goods.skus[i] = Object.assign(this.goods.skus[i], this.goods.category);
+                //赋值sku信息
+                for (let key in this.skuBaseInfo) {
+                    this.goods.skus[i][key] = this.skuBaseInfo[key][i];
+                }
+                this.goods.skus[i].spec = this.goods.skus[i].spec;
+            }
+            // 写入cookie
+            setCookie('goods', JSON.stringify(this.goods));
+            createOrUpdateGoods(this.goods).then(res => {
+                loading.close();
+                if (res.code === 200) {
+                    delCookie('goods'); //清空cookie
+                    this.$message.success('操作成功');
+                    this.$router.push({
+                        path: './Goods'
+                    });
+                } else {
+                    this.$message.error(res.message);
+                }
+            });
         }
     }
 };

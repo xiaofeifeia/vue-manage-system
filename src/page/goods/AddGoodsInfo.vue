@@ -4,7 +4,7 @@
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
                     <i class="el-icon-lx-cascades"></i>
-                    添加商品信息
+                    {{goods.spu.id?'修改':'添加'}}商品信息
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -79,9 +79,9 @@
                         </div>
                     </el-form-item>
                     <el-form-item label="服务保证" prop="saleService">
-                        <el-checkbox v-model="saleService" label="无忧退货"></el-checkbox>
-                        <el-checkbox v-model="saleService" label="快速退款"></el-checkbox>
-                        <el-checkbox v-model="saleService" label="免费包邮"></el-checkbox>
+                        <el-checkbox v-model="goods.spu.saleService" label="无忧退货"></el-checkbox>
+                        <el-checkbox v-model="goods.spu.saleService" label="快速退款"></el-checkbox>
+                        <el-checkbox v-model="goods.spu.saleService" label="免费包邮"></el-checkbox>
                     </el-form-item>
                 </el-form>
                 <div class="submitBtn">
@@ -118,7 +118,6 @@ export default {
     data() {
         return {
             goods: {},
-            saleService: [],
             allTemplate: [],
             allBrand: [],
             btnLoading: false,
@@ -160,6 +159,11 @@ export default {
         let goods = getCookie('goods');
         if (goods) {
             this.goods = JSON.parse(goods);
+            if (this.goods.spu.saleService) {
+                this.goods.spu.saleService = this.goods.spu.saleService.split(',');
+            } else {
+                this.goods.spu.saleService = [];
+            }
         }
         this.listAllTemplate();
         this.listAllBrand();
@@ -184,11 +188,14 @@ export default {
                         return t.id === this.goods.spu.templateId;
                     });
                     this.goods.spu.templateName = t.name;
-                    this.goods.spu.saleService = this.saleService.join(',');
+                    this.goods.spu.saleService = this.goods.spu.saleService.join(',');
                     //写入cookie
                     setCookie('goods', JSON.stringify(this.goods));
                     this.$router.push({
-                        path: './addGoodsAttr'
+                        path: './addGoodsAttr',
+                        query: {
+                            id: this.goods.spu.id
+                        }
                     });
                 }
                 this.btnLoading = false;

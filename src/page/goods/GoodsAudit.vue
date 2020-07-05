@@ -3,19 +3,12 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 商品列表
+                    <i class="el-icon-lx-cascades"></i> 商品审核
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="el-icon-edit" class="mr10" @click="handleAdd">添加</el-button>
-                <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    class="mr10"
-                    @click="deleteGoodsList"
-                >批量删除</el-button>
                 <el-input
                     v-model="query.name"
                     placeholder="商品名称/商品货号"
@@ -68,13 +61,12 @@
 
                 <el-table-column label="操作" width="200" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-view" @click="goodsView(scope.row)">查看</el-button>
                         <el-button
                             type="text"
-                            icon="el-icon-delete"
-                            class="red"
+                            icon="el-icon-edit"
                             @click="deleteGoods(scope.row)"
-                        >删除</el-button>
+                        >审核</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -89,33 +81,13 @@
                 ></el-pagination>
             </div>
         </div>
-
-        <!-- 编辑弹出框 -->
-        <el-dialog :title="title" :visible.sync="editVisible" width="30%">
-            <el-form ref="goodsForm" :model="goodsForm" :rules="rules" label-width="70px">
-                <el-form-item label="品牌名" required prop="name">
-                    <el-input v-model="goodsForm.name" placeholder="请输入品牌名"></el-input>
-                </el-form-item>
-                <el-form-item label="首字母">
-                    <el-input v-model="goodsForm.letter" placeholder="请输入品牌首字母"></el-input>
-                </el-form-item>
-                <el-form-item label="排序">
-                    <el-input type="number" v-model="goodsForm.seq" placeholder="请输入序号"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
-                <el-button @click="resetForm">重置</el-button>
-                <el-button type="primary" @click="submitForm">确 定</el-button>
-            </span>
-        </el-dialog>
     </div>
 </template>
 
 <script>
-import { findGoodsPage, setMarketable, deleteGoods, deleteGoodsList, audit, getGoodsInfo } from '../../api/goods';
+import { findGoodsPage, audit, getGoodsInfo } from '../../api/goods';
 export default {
-    name: 'GoodsTable',
+    name: 'GoodsAuditTable',
     data() {
         return {
             query: {
@@ -128,25 +100,7 @@ export default {
             editVisible: false,
             total: 0,
             goodsForm: {},
-            showIndex: -1,
-            title: '创建',
-            rules: {
-                name: [
-                    {
-                        required: true,
-                        message: '请输入品牌名',
-                        trigger: 'change'
-                    },
-                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'change' }
-                ],
-                letter: [
-                    {
-                        required: true,
-                        message: '请输入首字母',
-                        trigger: 'change'
-                    }
-                ]
-            }
+            showIndex: -1
         };
     },
     computed: {
@@ -186,9 +140,12 @@ export default {
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
-        handleAdd() {
+        goodsView(row) {
             this.$router.push({
-                path: './addGoodsCategory'
+                path: './goodView',
+                query: {
+                    id: row.id
+                }
             });
         },
         // 编辑操作
@@ -200,79 +157,11 @@ export default {
                 }
             });
         },
-        // 保存编辑
-        submitForm() {
-            this.$refs['goodsForm'].validate(valid => {
-                if (valid) {
-                    if (this.goodsForm.id) {
-                        this.update();
-                    } else {
-                        this.add();
-                    }
-                    return true;
-                }
-                return false;
-            });
-        },
-        resetForm() {
-            this.goodsForm = {};
-            this.$refs['goodsForm'].resetFields();
-        },
-        // 删除操作
-        deleteGoods(row) {
-            // 二次确认删除
-            this.$confirm('确定要删除吗？', '提示', {
-                type: 'warning'
-            })
-                .then(() => {
-                    deleteGoods(row.id).then(res => {
-                        if (res.code === 200) {
-                            this.$message.success('删除成功');
-                            this.handleSearch();
-                        } else {
-                            this.$message.error(res.message);
-                        }
-                    });
-                })
-                .catch(() => {});
-        },
-        //批量删除
-        deleteGoodsList() {
-            if (this.multipleSelection && this.multipleSelection.length > 0) {
-                let goodsIds = this.multipleSelection.map(data => {
-                    return data.id;
-                });
-                // 二次确认删除
-                this.$confirm('确定要删除吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    deleteGoodsList(goodsIds).then(res => {
-                        if (res.code === 200) {
-                            this.$message.success(`删除成功`);
-                            this.multipleSelection = [];
-                            this.handleSearch();
-                        } else {
-                            this.$message.error(res.message);
-                        }
-                    });
-                });
-            }
-        },
+
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageNum', val);
             this.getGoodsPage();
-        },
-        // 上架下架
-        setMarketable(row) {
-            setMarketable(row).then(res => {
-                if (res.code === 200) {
-                    this.$message.success('修改成功');
-                    this.handleSearch();
-                } else {
-                    this.$message.error(res.message);
-                }
-            });
         }
     }
 };

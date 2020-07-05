@@ -25,10 +25,10 @@ export const listParaByTemplateId = (templateId) => {
     });
 };
 
-export const createGoods = (goods) => {
+export const createOrUpdateGoods = (goods) => {
 
     return request({
-        url: '/goods/create',
+        url: '/goods/createOrUpdate',
         method: 'post',
         data: goods
     });
@@ -43,10 +43,10 @@ export const findGoodsPage = (params) => {
     });
 };
 
-export const updateStatus = (params) => {
+export const setMarketable = (params) => {
 
     return request({
-        url: '/goods/updateStatus/' + params.id + "?status=" + params.status,
+        url: '/goods/setMarketable/' + params.id + "?isMarketable=" + params.isMarketable,
         method: 'post'
     });
 };
@@ -65,5 +65,24 @@ export const deleteGoodsList = (ids) => {
         url: '/goods/deleteGoodsList',
         method: 'post',
         data: JSON.stringify(ids)
+    });
+};
+/**
+ * 审核商品
+ * @param {id,auditStatus,auditInfo} params 
+ */
+export const audit = (params) => {
+
+    return request({
+        url: '/goods/audit/' + params.id + "?auditStatus=" + auditStatus + "&auditInfo=" + auditInfo,
+        method: 'post'
+    });
+};
+
+export const getGoodsInfo = (id) => {
+
+    return request({
+        url: '/goods/getGoodsInfo/' + id,
+        method: 'post'
     });
 };
