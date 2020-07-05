@@ -91,12 +91,8 @@ export default {
                             title: '商品列表'
                         },
                         {
-                            index: 'goodsAudit',
+                            index: 'goodsAuditList',
                             title: '商品审核'
-                        },
-                        {
-                            index: 'goodsView',
-                            title: '商品查看'
                         }
                         // ,
                         // {

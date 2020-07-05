@@ -165,16 +165,22 @@ export default new Router({
                         title: '商品列表'
                     }
                 }, {
-                    path: '/goodsAudit',
-                    component: () => import('../page/goods/GoodsAudit.vue'),
+                    path: '/goodsAuditList',
+                    component: () => import('../page/goods/GoodsAuditList.vue'),
                     meta: {
-                        title: '商品审核'
+                        title: '商品审核列表'
                     }
                 }, {
                     path: '/goodView',
                     component: () => import('../page/goods/GoodsView.vue'),
                     meta: {
                         title: '商品查看'
+                    }
+                }, {
+                    path: '/goodView',
+                    component: () => import('../page/goods/GoodsAudit.vue'),
+                    meta: {
+                        title: '商品审核'
                     }
                 }
             ]

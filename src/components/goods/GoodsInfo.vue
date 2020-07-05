@@ -157,15 +157,7 @@
                     </el-table-column>
                 </el-table>
 
-                <div class="submitBtn">
-                    <el-button
-                        type="primary"
-                        class="up"
-                        icon="el-icon-arrow-left"
-                        size="medium"
-                    >返回审核列表</el-button>
-                    <el-button type="primary" size="medium">提交审核</el-button>
-                </div>
+                
             </div>
         </div>
     </div>
