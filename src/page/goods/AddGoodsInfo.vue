@@ -78,7 +78,7 @@
                             <span>不输入商品货号，系统将自动生成一个唯一的货号</span>
                         </div>
                     </el-form-item>
-                    <el-form-item label="服务保证" prop="saleService">
+                    <el-form-item label="服务保证">
                         <el-checkbox v-model="goods.spu.saleService" label="无忧退货"></el-checkbox>
                         <el-checkbox v-model="goods.spu.saleService" label="快速退款"></el-checkbox>
                         <el-checkbox v-model="goods.spu.saleService" label="免费包邮"></el-checkbox>
@@ -90,6 +90,7 @@
                         class="up"
                         icon="el-icon-arrow-left"
                         size="medium"
+                        @click="goodsCategoryPage"
                     >上一步，填写商品分类</el-button>
                     <el-button
                         type="primary"
@@ -178,6 +179,14 @@ export default {
         listAllBrand() {
             listAllBrand().then(res => {
                 this.allBrand = res.data;
+            });
+        },
+        goodsCategoryPage() {
+            this.$router.push({
+                path: './addGoodsCategory',
+                query: {
+                    id: this.goods.spu.id
+                }
             });
         },
         submitgoods() {

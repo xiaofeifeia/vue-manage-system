@@ -67,15 +67,13 @@ export const deleteGoodsList = (ids) => {
         data: JSON.stringify(ids)
     });
 };
-/**
- * 审核商品
- * @param {id,auditStatus,auditInfo} params 
- */
-export const audit = (params) => {
+
+export const auditGoods = (params) => {
 
     return request({
-        url: '/goods/audit/' + params.id + "?auditStatus=" + auditStatus + "&auditInfo=" + auditInfo,
-        method: 'post'
+        url: '/goods/audit',
+        method: 'post',
+        data: params
     });
 };
 

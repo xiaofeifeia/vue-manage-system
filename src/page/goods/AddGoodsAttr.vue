@@ -37,7 +37,7 @@
                                 :key="index"
                                 v-model="goods.spu.specItems[item.name]"
                                 @change="specChange(item.name,val,$event)"
-                            >{{val}}</el-checkbox>
+                            ></el-checkbox>
                         </el-form-item>
                     </div>
 
@@ -192,6 +192,7 @@
                         class="up"
                         icon="el-icon-arrow-left"
                         size="medium"
+                        @click="goodsInfoPage"
                     >上一步，填写商品信息</el-button>
                     <el-button type="primary" size="medium" @click="submitGoods">提交审核</el-button>
                 </div>
@@ -304,10 +305,10 @@ export default {
             } else {
                 this.goods.spu.paraItems = {};
             }
-            if (this.goods.spu.images && this.goods.spu.images.length > 0) {
+            if (this.goods.spu.images) {
                 this.goods.spu.imageList = this.goods.spu.images.split(',');
             } else {
-                this.spuImageList = [];
+                this.goods.spu.imageList = [];
             }
         }
 
@@ -356,6 +357,9 @@ export default {
                             name: t.name,
                             list: t.options.split(',')
                         });
+                        if (!this.goods.spu.specItems[t.name]) {
+                            this.goods.spu.specItems[t.name] = [];
+                        }
                     });
                 }
             });
@@ -369,6 +373,9 @@ export default {
                             name: t.name,
                             list: t.options.split(',')
                         });
+                        if (!this.goods.spu.paraItems[t.name]) {
+                            this.goods.spu.paraItems[t.name] = [];
+                        }
                     });
                 }
             });
@@ -377,9 +384,6 @@ export default {
             //
         },
         specChange(name, value, check) {
-            if (!this.goods.spu.specItems[name]) {
-                this.goods.spu.specItems[name] = [];
-            }
             //选中
             if (check) {
                 if (this.checkSpecNames.indexOf(name) === -1) {
@@ -415,8 +419,12 @@ export default {
         iterSpecItems(check) {
             //遍历
             let allList = [];
+
             for (let name in this.goods.spu.specItems) {
                 allList.splice(0, 0, this.goods.spu.specItems[name]);
+            }
+            if (!allList || allList.length <= 0) {
+                return;
             }
             //求笛卡尔积
             let resultList = allList.reduce((last, current) => {
@@ -485,6 +493,14 @@ export default {
             this.skuIndex = index;
             this.showImageDialog = true;
         },
+        goodsInfoPage() {
+            this.$router.push({
+                path: './addGoodsInfo',
+                query: {
+                    id: this.goods.spu.id
+                }
+            });
+        },
         submitGoods() {
             const loading = this.$loading({
                 lock: true,
@@ -492,8 +508,7 @@ export default {
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)'
             });
-            this.goods.spu.paraItems = this.goods.spu.paraItems;
-            this.goods.spu.specItems = this.goods.spu.specItems;
+
             if (this.goods.spu.imageList && this.goods.spu.imageList.length > 0) {
                 this.goods.spu.images = this.goods.spu.imageList.join(',');
                 this.goods.spu.image = this.goods.spu.imageList[this.goods.spu.firstIndex];

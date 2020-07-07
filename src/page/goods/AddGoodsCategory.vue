@@ -135,9 +135,12 @@ export default {
         };
     },
     created() {
+        delCookie('goods');
         this.listCategoryByParentId();
         const goodsId = this.$route.query.id;
-        this.getGoodsInfo(goodsId);
+        if (goodsId) {
+            this.getGoodsInfo(goodsId);
+        }
         this.goods.categoryList1;
     },
 

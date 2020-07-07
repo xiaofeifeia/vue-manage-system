@@ -177,7 +177,7 @@ export default new Router({
                         title: '商品查看'
                     }
                 }, {
-                    path: '/goodView',
+                    path: '/goodsAudit',
                     component: () => import('../page/goods/GoodsAudit.vue'),
                     meta: {
                         title: '商品审核'

@@ -156,8 +156,6 @@
                         </template>
                     </el-table-column>
                 </el-table>
-
-                
             </div>
         </div>
     </div>
@@ -196,6 +194,12 @@ export default {
             getGoodsInfo(id).then(res => {
                 if (res.code === 200) {
                     this.goods = res.data;
+                    this.$emit('get-spu', {
+                        id: this.goods.spu.id,
+                        auditStatus: this.goods.spu.auditStatus,
+                        auditInfo: this.goods.spu.auditInfo
+                    }); //向父组件传递审核状态
+
                     if (this.goods.spu) {
                         if (this.goods.spu.images) {
                             this.goods.spu.images = this.goods.spu.images.split(',');

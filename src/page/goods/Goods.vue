@@ -68,6 +68,7 @@
 
                 <el-table-column label="操作" width="200" align="center">
                     <template slot-scope="scope">
+                        <el-button type="text" icon="el-icon-view" @click="goodsView(scope.row)">查看</el-button>
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-button
                             type="text"
@@ -89,31 +90,11 @@
                 ></el-pagination>
             </div>
         </div>
-
-        <!-- 编辑弹出框 -->
-        <el-dialog :title="title" :visible.sync="editVisible" width="30%">
-            <el-form ref="goodsForm" :model="goodsForm" :rules="rules" label-width="70px">
-                <el-form-item label="品牌名" required prop="name">
-                    <el-input v-model="goodsForm.name" placeholder="请输入品牌名"></el-input>
-                </el-form-item>
-                <el-form-item label="首字母">
-                    <el-input v-model="goodsForm.letter" placeholder="请输入品牌首字母"></el-input>
-                </el-form-item>
-                <el-form-item label="排序">
-                    <el-input type="number" v-model="goodsForm.seq" placeholder="请输入序号"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
-                <el-button @click="resetForm">重置</el-button>
-                <el-button type="primary" @click="submitForm">确 定</el-button>
-            </span>
-        </el-dialog>
     </div>
 </template>
 
 <script>
-import { findGoodsPage, setMarketable, deleteGoods, deleteGoodsList, audit, getGoodsInfo } from '../../api/goods';
+import { findGoodsPage, setMarketable, deleteGoods, deleteGoodsList, auditGoods, getGoodsInfo } from '../../api/goods';
 export default {
     name: 'GoodsTable',
     data() {
@@ -257,6 +238,14 @@ export default {
                     });
                 });
             }
+        },
+        goodsView(row) {
+            this.$router.push({
+                path: './goodView',
+                query: {
+                    id: row.id
+                }
+            });
         },
         // 分页导航
         handlePageChange(val) {

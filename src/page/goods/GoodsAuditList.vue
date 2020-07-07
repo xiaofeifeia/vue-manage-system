@@ -62,11 +62,7 @@
                 <el-table-column label="操作" width="200" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-view" @click="goodsView(scope.row)">查看</el-button>
-                        <el-button
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="deleteGoods(scope.row)"
-                        >审核</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="goodsAudit(scope.row)">审核</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -143,6 +139,14 @@ export default {
         goodsView(row) {
             this.$router.push({
                 path: './goodView',
+                query: {
+                    id: row.id
+                }
+            });
+        },
+        goodsAudit(row) {
+            this.$router.push({
+                path: './goodsAudit',
                 query: {
                     id: row.id
                 }
