@@ -182,6 +182,12 @@ export default new Router({
                     meta: {
                         title: '商品审核'
                     }
+                }, {
+                    path: '/store',
+                    component: () => import('../page/goods/Store.vue'),
+                    meta: {
+                        title: '门店管理'
+                    }
                 }
             ]
         },

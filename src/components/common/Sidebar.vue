@@ -93,6 +93,10 @@ export default {
                         {
                             index: 'goodsAuditList',
                             title: '商品审核'
+                        },
+                        {
+                            index: 'store',
+                            title: '门店管理'
                         }
                         // ,
                         // {
