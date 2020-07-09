@@ -115,7 +115,7 @@
                     ></el-input>
                 </el-form-item>
 
-                <el-form-item label="LOGO">
+                <el-form-item label="logo">
                     <el-upload
                         action="http://localhost:8874/upload"
                         :on-remove="handleUploadRemove"
@@ -202,7 +202,7 @@ export default {
             //后台返回数据
             if (res.code === 200) {
                 this.fileList.push(res.data);
-                this.StoreForm.image = res.data.url;
+                this.storeForm.image = res.data.url;
                 this.$message.success('上传成功');
             } else {
                 this.$message.error('上传失败');

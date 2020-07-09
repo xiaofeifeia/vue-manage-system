@@ -4,7 +4,7 @@
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
                     <i class="el-icon-lx-cascades"></i>
-                    {{goods.spu.id?'修改':'添加'}}商品信息
+                    {{ goods.spu.id ? '修改' : '添加' }}商品信息
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -20,32 +20,19 @@
             <div class="gcontent">
                 <el-form ref="goods" :model="goods" :rules="rules" label-width="150px">
                     <el-form-item label="商品分类" required>
-                        <span>{{goods.spu.categoryName1}} ></span>
-                        <span>{{goods.spu.categoryName2}} ></span>
-                        <span>{{goods.spu.categoryName3}}</span>
+                        <span>{{ goods.spu.categoryName1 }} ></span>
+                        <span>{{ goods.spu.categoryName2 }} ></span>
+                        <span>{{ goods.spu.categoryName3 }}</span>
                     </el-form-item>
                     <el-form-item label="名称" required prop="spu.name">
                         <el-input v-model="goods.spu.name" placeholder="请输入名称" class="handle-input"></el-input>
                     </el-form-item>
                     <el-form-item label="副标题" required prop="spu.caption">
-                        <el-input
-                            v-model="goods.spu.caption"
-                            placeholder="请输入副标题"
-                            class="handle-input"
-                        ></el-input>
+                        <el-input v-model="goods.spu.caption" placeholder="请输入副标题" class="handle-input"></el-input>
                     </el-form-item>
                     <el-form-item label="商品品牌" required prop="spu.brandId">
-                        <el-select
-                            v-model="goods.spu.brandId"
-                            no-match-text="请选择"
-                            placeholder="请选择"
-                        >
-                            <el-option
-                                v-for="item in allBrand"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id"
-                            ></el-option>
+                        <el-select v-model="goods.spu.brandId" no-match-text="请选择" placeholder="请选择">
+                            <el-option v-for="item in allBrand" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="商品介绍">
@@ -59,17 +46,8 @@
                         ></el-input>
                     </el-form-item>
                     <el-form-item label="选择模板" required prop="spu.templateId">
-                        <el-select
-                            v-model="goods.spu.templateId"
-                            no-match-text="请选择"
-                            placeholder="请选择"
-                        >
-                            <el-option
-                                v-for="item in allTemplate"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id"
-                            ></el-option>
+                        <el-select v-model="goods.spu.templateId" no-match-text="请选择" placeholder="请选择">
+                            <el-option v-for="item in allTemplate" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="商品货号">
@@ -79,25 +57,16 @@
                         </div>
                     </el-form-item>
                     <el-form-item label="服务保证">
-                        <el-checkbox v-model="goods.spu.saleService" label="无忧退货"></el-checkbox>
-                        <el-checkbox v-model="goods.spu.saleService" label="快速退款"></el-checkbox>
-                        <el-checkbox v-model="goods.spu.saleService" label="免费包邮"></el-checkbox>
+                        <el-checkbox-group v-model="goods.spu.saleService" size="small">
+                            <el-checkbox v-for="s in saleServiceArr" :label="s" :key="s"></el-checkbox>
+                        </el-checkbox-group>
                     </el-form-item>
                 </el-form>
                 <div class="submitBtn">
-                    <el-button
-                        type="primary"
-                        class="up"
-                        icon="el-icon-arrow-left"
-                        size="medium"
-                        @click="goodsCategoryPage"
-                    >上一步，填写商品分类</el-button>
-                    <el-button
-                        type="primary"
-                        size="medium"
-                        @click="submitgoods"
-                        :loading="btnLoading"
+                    <el-button type="primary" class="up" icon="el-icon-arrow-left" size="medium" @click="goodsCategoryPage"
+                        >上一步，填写商品分类</el-button
                     >
+                    <el-button type="primary" size="medium" @click="submitgoods" :loading="btnLoading">
                         下一步，填写商品属性
                         <i class="el-icon-arrow-right el-icon--right"></i>
                     </el-button>
@@ -118,9 +87,10 @@ export default {
     name: 'addGoodsInfo',
     data() {
         return {
-            goods: {},
+            goods: { spu: { saleService: [] } },
             allTemplate: [],
             allBrand: [],
+            saleServiceArr: ['无忧退货', '快速退款', '免费包邮'],
             btnLoading: false,
             rules: {
                 'spu.name': [
@@ -163,7 +133,7 @@ export default {
             if (this.goods.spu.saleService) {
                 this.goods.spu.saleService = this.goods.spu.saleService.split(',');
             } else {
-                this.goods.spu.saleService = [];
+                this.$set(this.goods.spu, 'saleService', []);
             }
         }
         this.listAllTemplate();

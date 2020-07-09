@@ -4,7 +4,7 @@
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
                     <i class="el-icon-lx-cascades"></i>
-                    {{goods.spu.id?'修改':'添加'}}商品属性
+                    {{ goods.spu.id ? '修改' : '添加' }}商品属性
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -20,101 +20,67 @@
             <div class="gcontent">
                 <el-form ref="goods" :model="goods" :rules="rules" label-width="150px">
                     <el-form-item label="规格参数组" required>
-                        <el-input v-model="goods.spu.templateName" disabled class="handle-input"></el-input>
+                        <el-input v-model="goods.spu.templateName" readonly class="handle-input_max"></el-input>
                     </el-form-item>
                     <div class="spec">
                         <el-form-item label="商品规格" required></el-form-item>
 
-                        <el-form-item
-                            v-for="item in allSpec"
-                            :key="item.id"
-                            :label="item.name"
-                            :prop="item.name"
-                        >
+                        <el-form-item v-for="item in allSpec" :key="item.id" :label="item.name" :prop="item.name">
                             <el-checkbox
-                                v-for="(val,index) in item.list"
+                                v-for="(val, index) in item.list"
                                 :label="val"
                                 :key="index"
                                 v-model="goods.spu.specItems[item.name]"
-                                @change="specChange(item.name,val,$event)"
+                                @change="specChange(item.name, val, $event)"
                             ></el-checkbox>
                         </el-form-item>
                     </div>
 
                     <div class="el-table el-table--border">
                         <div class="el-table__header-wrapper">
-                            <table
-                                cellspacing="0"
-                                cellpadding="0"
-                                border="0"
-                                class="el-table__header"
-                                style="width: 100%;"
-                            >
+                            <table cellspacing="0" cellpadding="0" border="0" class="el-table__header" style="width: 100%;">
                                 <thead class="has-gutter">
                                     <tr class>
                                         <th
                                             colspan="1"
                                             rowspan="1"
-                                            v-for="(item,index) in specTableColums"
+                                            v-for="(item, index) in specTableColums"
                                             :key="index"
                                             class="el-table_10_column_100"
                                         >
                                             <div class="cell">
                                                 <i v-show="item.required" class="need">*</i>
-                                                {{item.label}}
+                                                {{ item.label }}
                                             </div>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(item,index) in checkSpecDatas" :key="index">
-                                        <td
-                                            colspan="1"
-                                            rowspan="1"
-                                            v-for="(val,index) in item"
-                                            :key="index"
-                                        >
-                                            <span>{{val}}</span>
+                                    <tr v-for="(item, index) in checkSpecDatas" :key="index">
+                                        <td colspan="1" rowspan="1" v-for="(val, index) in item" :key="index">
+                                            <span>{{ val }}</span>
                                         </td>
                                         <td colspan="1" rowspan="1">
-                                            <el-input
-                                                v-model="skuBaseInfo.price[index]"
-                                                class="handle-input"
-                                            ></el-input>
+                                            <el-input v-model="skuBaseInfo.price[index]" class="handle-input"></el-input>
                                             <p v-show="false">错误：2323</p>
                                         </td>
                                         <td colspan="1" rowspan="1">
-                                            <el-input
-                                                v-model.number="skuBaseInfo.num[index]"
-                                                class="handle-input"
-                                            ></el-input>
+                                            <el-input v-model.number="skuBaseInfo.num[index]" class="handle-input"></el-input>
                                         </td>
                                         <td colspan="1" rowspan="1">
-                                            <el-input
-                                                v-model.number="skuBaseInfo.alertNum[index]"
-                                                class="handle-input"
-                                            ></el-input>
+                                            <el-input v-model.number="skuBaseInfo.alertNum[index]" class="handle-input"></el-input>
                                         </td>
                                         <td colspan="1" rowspan="1">
-                                            <el-input
-                                                v-model="skuBaseInfo.sn[index]"
-                                                class="handle-input"
-                                            ></el-input>
+                                            <el-input v-model="skuBaseInfo.sn[index]" class="handle-input"></el-input>
                                         </td>
                                         <td colspan="1" rowspan="1">
-                                            <el-input
-                                                v-model="skuBaseInfo.weight[index]"
-                                                class="handle-input"
-                                            ></el-input>
+                                            <el-input v-model="skuBaseInfo.weight[index]" class="handle-input"></el-input>
                                         </td>
 
                                         <td colspan="1" rowspan="1">
-                                            <button
-                                                class="el-button el-button--text el-button--small"
-                                                @click="handleUploadSkuImage(index)"
-                                            >
+                                            <el-button type="primary" @click="handleUploadSkuImage(index)">
                                                 <span>上传图片</span>
-                                            </button>
+                                            </el-button>
                                         </td>
                                     </tr>
 
@@ -125,41 +91,32 @@
                     </div>
                     <div class="el-table paraTable el-table--border">
                         <div class="el-table__header-wrapper">
-                            <table
-                                cellspacing="0"
-                                cellpadding="0"
-                                border="0"
-                                class="el-table__header"
-                                style="width: 100%;"
-                            >
+                            <table cellspacing="0" cellpadding="0" border="0" class="el-table__header" style="width: 100%;">
                                 <thead class="has-gutter">
                                     <tr class>
                                         <th
-                                            :colspan="index===0?1:3"
+                                            :colspan="index === 0 ? 1 : 3"
                                             rowspan="1"
-                                            v-for="(item,index) in paraTableColums"
+                                            v-for="(item, index) in paraTableColums"
                                             :key="index"
                                             class="el-table_10_column_100"
                                         >
-                                            <div class="cell">{{item.label}}</div>
+                                            <div class="cell">{{ item.label }}</div>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(p,index) in allPara" :key="index">
+                                    <tr v-for="(p, index) in allPara" :key="index">
                                         <td colspan="1" rowspan="1">
                                             <span>
                                                 <i>*</i>
-                                                {{p.name}}
+                                                {{ p.name }}
                                             </span>
                                         </td>
                                         <td colspan="3" rowspan="1" class="left">
-                                            <el-select
-                                                placeholder="请选择"
-                                                v-model="goods.spu.paraItems[p.name]"
-                                            >
+                                            <el-select placeholder="请选择" v-model="goods.spu.paraItems[p.name]" @change="paraChange">
                                                 <el-option
-                                                    v-for="(val,index) in p.list"
+                                                    v-for="(val, index) in p.list"
                                                     :key="index"
                                                     :label="val"
                                                     :value="val"
@@ -180,30 +137,18 @@
                     ></common-upload>
                 </el-form>
                 <div class="myEditor">
-                    <quill-editor
-                        ref="myTextEditor"
-                        v-model="goods.spu.introduction"
-                        :options="editorOption"
-                    ></quill-editor>
+                    <quill-editor ref="myTextEditor" v-model="goods.spu.introduction" :options="editorOption"></quill-editor>
                 </div>
                 <div class="submitBtn">
-                    <el-button
-                        type="primary"
-                        class="up"
-                        icon="el-icon-arrow-left"
-                        size="medium"
-                        @click="goodsInfoPage"
-                    >上一步，填写商品信息</el-button>
+                    <el-button type="primary" class="up" icon="el-icon-arrow-left" size="medium" @click="goodsInfoPage"
+                        >上一步，填写商品信息</el-button
+                    >
                     <el-button type="primary" size="medium" @click="submitGoods">提交审核</el-button>
                 </div>
             </div>
             <el-divider></el-divider>
             <el-dialog title="上传图片" :visible.sync="showImageDialog" width="58%">
-                <common-upload
-                    :image-list="skuImageList"
-                    :image-index="firstIndex"
-                    @get-files="getSkuImageList"
-                ></common-upload>
+                <common-upload :image-list="skuImageList" :image-index="firstIndex" @get-files="getSkuImageList"></common-upload>
             </el-dialog>
         </div>
     </div>
@@ -271,13 +216,15 @@ export default {
             if (this.goods.skus) {
                 this.iterSku2SkuBaseInfo();
             } else {
-                this.goods.skus = [];
+                this.$set(this.goods, 'skus', []);
             }
             if (this.goods.spu.specItems) {
                 //遍历
                 let allList = [];
                 if (typeof this.goods.spu.specItems === 'string') {
-                    this.goods.spu.specItems = JSON.parse(this.goods.spu.specItems);
+                    this.$set(this.goods.spu, 'specItems', JSON.parse(this.goods.spu.specItems));
+                } else {
+                    this.$set(this.goods.spu, 'specItems', this.goods.spu.specItems);
                 }
                 for (var key in this.goods.spu.specItems) {
                     this.checkSpecNames.splice(0, 0, key); //放入队头
@@ -298,17 +245,21 @@ export default {
                     this.checkSpecDatas.push(res.split('_'));
                 });
             } else {
-                this.goods.spu.specItems = {};
+                this.$set(this.goods.spu, 'specItems', []);
             }
-            if (this.goods.spu.paraItems && typeof this.goods.spu.paraItems === 'string') {
-                this.goods.spu.paraItems = JSON.parse(this.goods.spu.paraItems);
+            if (this.goods.spu.paraItems) {
+                if (typeof this.goods.spu.paraItems === 'string') {
+                    this.$set(this.goods.spu, 'paraItems', JSON.parse(this.goods.spu.paraItems));
+                } else {
+                    this.$set(this.goods.spu, 'paraItems', this.goods.spu.paraItems);
+                }
             } else {
-                this.goods.spu.paraItems = {};
+                this.$set(this.goods.spu, 'paraItems', {});
             }
             if (this.goods.spu.images) {
-                this.goods.spu.imageList = this.goods.spu.images.split(',');
+                this.$set(this.goods.spu, 'imageList', this.goods.spu.images.split(','));
             } else {
-                this.goods.spu.imageList = [];
+                this.$set(this.goods.spu, 'imageList', []);
             }
         }
 
@@ -318,6 +269,9 @@ export default {
     },
 
     methods: {
+        paraChange(val) {
+            this.$forceUpdate();
+        },
         getSpuImageList(images, firstIndex) {
             if (images) {
                 this.goods.spu.imageList = images;
@@ -374,7 +328,7 @@ export default {
                             list: t.options.split(',')
                         });
                         if (!this.goods.spu.paraItems[t.name]) {
-                            this.goods.spu.paraItems[t.name] = [];
+                            this.goods.spu.paraItems[t.name] = '';
                         }
                     });
                 }
@@ -390,7 +344,8 @@ export default {
                     this.checkSpecNames.splice(0, 0, name); //放入队头
                     this.specTableColums.splice(0, 0, { label: name, prop: name }); //放入队头
                 }
-                if (this.goods.spu.specItems[name].indexOf(value) === -1) {
+                if (typeof this.goods.spu.specItems[name] === 'boolean') {
+                    this.goods.spu.specItems[name] = [];
                     this.goods.spu.specItems[name].splice(0, 0, value); //放入队头
                 }
             } else {
@@ -414,16 +369,23 @@ export default {
                     }
                 }
             }
+
             this.iterSpecItems(check);
+            console.log('skus-->' + JSON.stringify(this.goods.skus));
         },
         iterSpecItems(check) {
             //遍历
             let allList = [];
 
             for (let name in this.goods.spu.specItems) {
-                allList.splice(0, 0, this.goods.spu.specItems[name]);
+                if (this.goods.spu.specItems[name] && this.goods.spu.specItems[name].length > 0) {
+                    allList.splice(0, 0, this.goods.spu.specItems[name]);
+                }
             }
+
             if (!allList || allList.length <= 0) {
+                this.goods.skus = [];
+                this.checkSpecDatas = [];
                 return;
             }
             //求笛卡尔积
@@ -436,36 +398,46 @@ export default {
                 });
                 return array;
             });
-
+            console.log('resultList-->' + JSON.stringify(resultList));
             this.checkSpecDatas = [];
-
             let containSpecArr = [];
+            if (this.goods.skus && this.goods.skus.length > 0) {
+                this.goods.skus.map(sku => {
+                    let str = '';
+                    if (typeof sku.spec === 'string') {
+                        sku.spec = JSON.parse(sku.spec);
+                    }
+                    for (let index in this.checkSpecNames) {
+                        if (sku.spec[this.checkSpecNames[index]]) {
+                            str += sku.spec[this.checkSpecNames[index]] + '_';
+                        }
+                    }
+                    if (str) {
+                        containSpecArr.push(str.substring(0, str.length - 1));
+                    }
+                });
+            }
 
-            this.goods.skus.forEach(sku => {
-                let str = '';
-                let spec = sku.spec;
-                if (typeof spec === 'string') {
-                    spec = JSON.parse(sku.spec);
-                }
-                for (let index in this.checkSpecNames) {
-                    str += spec[this.checkSpecNames[index]] + '_';
-                }
-                if (str) {
-                    containSpecArr.push(str.substring(0, str.length - 1));
-                }
-            });
             let skusArr = []; //再取消勾选的时候，要重新设置skus
             resultList.forEach(res => {
                 const ind = containSpecArr.indexOf(res);
                 this.checkSpecDatas.push(res.split('_'));
                 if (check) {
                     if (ind === -1) {
-                        //生成skus
-                        let sku = { images: {}, imageList: [], spec: {} };
-                        for (let j = 0; j < res.split('_').length; j++) {
-                            sku.spec[this.checkSpecNames[j]] = res.split('_')[j];
+                        //判断长度不一样的 如skus中是槟色_5寸   选中是：槟色_5寸_6GB+64GB
+                        let index = this.checkSkusSpecIndex(containSpecArr, res);
+                        if (index !== -1) {
+                            for (let j = 0; j < res.split('_').length; j++) {
+                                this.goods.skus[index].spec[this.checkSpecNames[j]] = res.split('_')[j];
+                            }
+                        } else {
+                            //生成skus
+                            let sku = { images: '', imageList: [], spec: {} };
+                            for (let j = 0; j < res.split('_').length; j++) {
+                                sku.spec[this.checkSpecNames[j]] = res.split('_')[j];
+                            }
+                            this.goods.skus.push(sku);
                         }
-                        this.goods.skus.push(sku);
                     }
                 } else {
                     if (ind !== -1) {
@@ -484,6 +456,18 @@ export default {
                     });
                 }
             }
+        },
+        checkSkusSpecIndex(containSpecArr, spec) {
+            let index=-1;
+            containSpecArr.forEach(s => {
+                if (spec.length > s.length) {
+                    if (spec.indexOf(s) !== -1) {
+                         index=containSpecArr.indexOf(s);
+                         return;
+                    }
+                }
+            });
+            return index;
         },
         handleUploadSkuImage(index) {
             this.skuImageList = [];
@@ -577,6 +561,9 @@ export default {
 .el-table {
     margin-top: 25px;
     text-align: center;
+}
+.handle-input_max {
+    width: 35%;
 }
 .handle-input {
     width: 80%;
