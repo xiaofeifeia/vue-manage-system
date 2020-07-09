@@ -209,6 +209,11 @@ export default {
         quillEditor,
         commonUpload
     },
+    watch: {
+        $route(to, from) {
+            this.$router.go(0);
+        }
+    },
     created() {
         let goodsStr = getCookie('goods');
         if (goodsStr) {
@@ -231,19 +236,21 @@ export default {
                     this.specTableColums.splice(0, 0, { label: key, prop: key }); //放入队头
                     allList.splice(0, 0, this.goods.spu.specItems[key]);
                 }
-                //求笛卡尔积
-                let resultList = allList.reduce((last, current) => {
-                    const array = [];
-                    last.forEach(par1 => {
-                        current.forEach(par2 => {
-                            array.push(par1 + '_' + par2);
+                if (allList.length > 0) {
+                    //求笛卡尔积
+                    let resultList = allList.reduce((last, current) => {
+                        const array = [];
+                        last.forEach(par1 => {
+                            current.forEach(par2 => {
+                                array.push(par1 + '_' + par2);
+                            });
                         });
+                        return array;
                     });
-                    return array;
-                });
-                resultList.forEach(res => {
-                    this.checkSpecDatas.push(res.split('_'));
-                });
+                    resultList.forEach(res => {
+                        this.checkSpecDatas.push(res.split('_'));
+                    });
+                }
             } else {
                 this.$set(this.goods.spu, 'specItems', []);
             }
@@ -371,7 +378,6 @@ export default {
             }
 
             this.iterSpecItems(check);
-            console.log('skus-->' + JSON.stringify(this.goods.skus));
         },
         iterSpecItems(check) {
             //遍历
@@ -398,7 +404,6 @@ export default {
                 });
                 return array;
             });
-            console.log('resultList-->' + JSON.stringify(resultList));
             this.checkSpecDatas = [];
             let containSpecArr = [];
             if (this.goods.skus && this.goods.skus.length > 0) {
@@ -458,12 +463,12 @@ export default {
             }
         },
         checkSkusSpecIndex(containSpecArr, spec) {
-            let index=-1;
+            let index = -1;
             containSpecArr.forEach(s => {
                 if (spec.length > s.length) {
                     if (spec.indexOf(s) !== -1) {
-                         index=containSpecArr.indexOf(s);
-                         return;
+                        index = containSpecArr.indexOf(s);
+                        return;
                     }
                 }
             });

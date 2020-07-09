@@ -143,7 +143,11 @@ export default {
         }
         this.goods.categoryList1;
     },
-
+    watch: {
+        $route(to, from) {
+            this.$router.go(0);
+        }
+    },
     methods: {
         async getGoodsInfo(id) {
             await getGoodsInfo(id).then(res => {

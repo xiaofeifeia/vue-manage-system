@@ -138,7 +138,11 @@ export default {
     created() {
         this.getGoodsInfo(this.id);
     },
-
+    watch: {
+        $route(to, from) {
+            this.$router.go(0);
+        }
+    },
     methods: {
         shouImage(row) {
             this.showSkuImage = true;

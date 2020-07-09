@@ -139,7 +139,11 @@ export default {
         this.listAllTemplate();
         this.listAllBrand();
     },
-
+    watch: {
+        $route(to, from) {
+            this.$router.go(0);
+        }
+    },
     methods: {
         listAllTemplate() {
             listAllTemplate().then(res => {
