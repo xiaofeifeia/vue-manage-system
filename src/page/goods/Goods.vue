@@ -241,9 +241,10 @@ export default {
         },
         goodsView(row) {
             this.$router.push({
-                path: './goodView',
+                path: './goodsView',
                 query: {
-                    id: row.id
+                    id: row.id,
+                    type:'goods'
                 }
             });
         },

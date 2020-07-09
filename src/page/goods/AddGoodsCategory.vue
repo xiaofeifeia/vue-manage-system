@@ -4,7 +4,7 @@
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
                     <i class="el-icon-lx-cascades"></i>
-                    {{goods.spu.id?'修改':'添加'}}商品信息
+                    {{ goods.spu.id ? '修改' : '添加' }}商品信息
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -23,19 +23,18 @@
                         <span class="el-checkbox__label">选择一级分类</span>
                     </p>
                     <div class="el-transfer-panel__body">
-                        <ul class="el-transfer-panel__list" v-show="categoryList1.length>0">
+                        <ul class="el-transfer-panel__list" v-show="categoryList1.length > 0">
                             <li
-                                v-for="(item,index) in categoryList1"
+                                v-for="(item, index) in categoryList1"
                                 :key="item.id"
                                 :value="item.id"
-                                :class="{selected:item.id===goods.spu.category1Id}"
-                                @click="liSelected(index,1,item)"
-                            >{{item.name}}</li>
+                                :class="{ selected: item.id === goods.spu.category1Id }"
+                                @click="liSelected(index, 1, item)"
+                            >
+                                {{ item.name }}
+                            </li>
                         </ul>
-                        <ul
-                            class="el-transfer-panel__list"
-                            v-show="!categoryList1.length || categoryList1.length===0"
-                        >
+                        <ul class="el-transfer-panel__list" v-show="!categoryList1.length || categoryList1.length === 0">
                             <span>暂无数据</span>
                         </ul>
                     </div>
@@ -46,19 +45,18 @@
                         <span class="el-checkbox__label">选择二级分类</span>
                     </p>
                     <div class="el-transfer-panel__body">
-                        <ul class="el-transfer-panel__list" v-show="categoryList2.length>0">
+                        <ul class="el-transfer-panel__list" v-show="categoryList2.length > 0">
                             <li
-                                v-for="(item,index) in categoryList2"
+                                v-for="(item, index) in categoryList2"
                                 :key="item.id"
                                 :value="item.id"
-                                :class="{selected:item.id===goods.spu.category2Id}"
-                                @click="liSelected(index,2,item)"
-                            >{{item.name}}</li>
+                                :class="{ selected: item.id === goods.spu.category2Id }"
+                                @click="liSelected(index, 2, item)"
+                            >
+                                {{ item.name }}
+                            </li>
                         </ul>
-                        <ul
-                            class="el-transfer-panel__list"
-                            v-show="!categoryList2.length || categoryList2.length===0"
-                        >
+                        <ul class="el-transfer-panel__list" v-show="!categoryList2.length || categoryList2.length === 0">
                             <span>暂无数据</span>
                         </ul>
                     </div>
@@ -69,19 +67,18 @@
                         <span class="el-checkbox__label">选择三级分类</span>
                     </p>
                     <div class="el-transfer-panel__body">
-                        <ul class="el-transfer-panel__list" v-show="categoryList3.length>0">
+                        <ul class="el-transfer-panel__list" v-show="categoryList3.length > 0">
                             <li
-                                v-for="(item,index) in categoryList3"
+                                v-for="(item, index) in categoryList3"
                                 :key="item.id"
                                 :value="item.id"
-                                :class="{selected:item.id===goods.spu.category3Id}"
-                                @click="liSelected(index,3,item)"
-                            >{{item.name}}</li>
+                                :class="{ selected: item.id === goods.spu.category3Id }"
+                                @click="liSelected(index, 3, item)"
+                            >
+                                {{ item.name }}
+                            </li>
                         </ul>
-                        <ul
-                            class="el-transfer-panel__list"
-                            v-show="!categoryList3.length || categoryList3.length===0"
-                        >
+                        <ul class="el-transfer-panel__list" v-show="!categoryList3.length || categoryList3.length === 0">
                             <span>暂无数据</span>
                         </ul>
                     </div>
@@ -89,14 +86,17 @@
                 <div class="tip">
                     <p>
                         您当前选择的商品类别是：
-                        <span>{{ this.goods.spu.categoryName1}}</span> >
-                        <span>{{ this.goods.spu.categoryName2}}</span>
+                        <span>{{ this.goods.spu.categoryName1 }}</span> >
+                        <span>{{ this.goods.spu.categoryName2 }}</span>
                         >
-                        <span>{{ this.goods.spu.categoryName3}}</span>
+                        <span>{{ this.goods.spu.categoryName3 }}</span>
                     </p>
                 </div>
                 <el-divider></el-divider>
                 <div class="submitBtn">
+                    <el-button type="primary" class="up" icon="el-icon-arrow-left" size="medium" @click="goodsListPage"
+                        >返回商品列表</el-button
+                    >
                     <el-button type="primary" size="medium" @click="submitGoodsCategory">
                         下一步，填写商品信息
                         <i class="el-icon-arrow-right el-icon--right"></i>
@@ -122,9 +122,9 @@ export default {
             categoryList3: [],
             goods: {
                 spu: {
-                    category1Id: null,
-                    category2Id: null,
-                    category3Id: null,
+                    category1Id: undefined,
+                    category2Id: undefined,
+                    category3Id: undefined,
                     categoryName1: '',
                     categoryName2: '',
                     categoryName3: ''
@@ -216,7 +216,7 @@ export default {
             }
         },
         submitGoodsCategory() {
-            if (this.goods.spu.category1Id === null) {
+            if (this.goods.spu.category1Id === undefined) {
                 this.$message.error('请选择分类');
                 return false;
             }
@@ -229,6 +229,11 @@ export default {
                 query: {
                     id: this.goods.spu.id
                 }
+            });
+        },
+        goodsListPage() {
+            this.$router.push({
+                path: './goods'
             });
         }
     }

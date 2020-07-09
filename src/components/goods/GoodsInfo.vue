@@ -11,15 +11,13 @@
         <div class="container">
             <div class="gcontent">
                 <div class="spuContent">
-                    <el-form label-width="40%" class="categoryForm">
-                        <el-form-item label="商品分类">
-                            <span>{{goods.spu.categoryName1}} ></span>
-                            <span>{{goods.spu.categoryName2}} ></span>
-                            <span>{{goods.spu.categoryName3}}</span>
-                        </el-form-item>
-                    </el-form>
                     <div class="left">
-                        <el-form label-width="150px">
+                        <el-form label-width="150px" ref="goods" :model="goods">
+                            <el-form-item label="商品分类">
+                                <span>{{ goods.spu.categoryName1 }} ></span>
+                                <span>{{ goods.spu.categoryName2 }} ></span>
+                                <span>{{ goods.spu.categoryName3 }}</span>
+                            </el-form-item>
                             <el-form-item label="图片">
                                 <el-image
                                     style="width: 100px; height: 100px"
@@ -35,11 +33,7 @@
                             </el-form-item>
 
                             <el-form-item label="选择模板">
-                                <el-input
-                                    v-model="goods.spu.templateId"
-                                    readonly
-                                    class="handle-input"
-                                ></el-input>
+                                <el-input v-model="goods.spu.templateId" readonly class="handle-input"></el-input>
                             </el-form-item>
                             <el-form-item label="商品货号">
                                 <el-input v-model="goods.spu.sn" readonly class="handle-input"></el-input>
@@ -55,49 +49,23 @@
                                 ></el-input>
                             </el-form-item>
                         </el-form>
-                        <el-form-item label="商品介绍">
-                            <el-input
-                                type="textarea"
-                                class="handle-input"
-                                v-model="goods.spu.introduction"
-                                disabled
-                                rows="4"
-                            ></el-input>
-                        </el-form-item>
                     </div>
                     <div class="right">
                         <el-form>
                             <el-form-item label="商品品牌">
-                                <el-input
-                                    v-model="goods.spu.brandName"
-                                    readonly
-                                    class="handle-input"
-                                ></el-input>
+                                <el-input v-model="goods.spu.brandName" readonly class="handle-input"></el-input>
                             </el-form-item>
 
                             <el-form-item label="服务保证">
-                                <el-input
-                                    v-model="goods.spu.saleService"
-                                    readonly
-                                    class="handle-input"
-                                ></el-input>
+                                <el-input v-model="goods.spu.saleService" readonly class="handle-input"></el-input>
                             </el-form-item>
                             <el-form-item label="商品参数"></el-form-item>
-                            <el-form-item
-                                label-width="120px"
-                                v-for="(value,key) in goods.spu.paraItems"
-                                :label="key"
-                                :key="key"
-                            >
-                                <el-input
-                                    v-model="goods.spu.paraItems[key]"
-                                    readonly
-                                    class="handle-input short"
-                                ></el-input>
+                            <el-form-item label-width="120px" v-for="(value, key) in goods.spu.paraItems" :label="key" :key="key">
+                                <el-input v-model="goods.spu.paraItems[key]" readonly class="handle-input short"></el-input>
                             </el-form-item>
                             <el-form-item label="图片列表"></el-form-item>
                             <ul>
-                                <li v-for="(item,index) in goods.spu.images" :key="index">
+                                <li v-for="(item, index) in goods.spu.images" :key="index">
                                     <el-image :src="item" :preview-src-list="goods.spu.images"></el-image>
                                 </li>
                             </ul>
@@ -107,7 +75,7 @@
                     <el-dialog title="商品图片" :visible.sync="showSkuImage" width="40%">
                         <el-form>
                             <ul>
-                                <li v-for="(item,index) in skuImageList" :key="index">
+                                <li v-for="(item, index) in skuImageList" :key="index">
                                     <el-image :src="item" :preview-src-list="skuImageList"></el-image>
                                 </li>
                             </ul>
@@ -115,13 +83,7 @@
                     </el-dialog>
                 </div>
 
-                <el-table
-                    :data="goods.skus"
-                    border
-                    class="table"
-                    ref="multipleTable"
-                    header-cell-class-name="table-header"
-                >
+                <el-table :data="goods.skus" border class="table" ref="multipleTable" header-cell-class-name="table-header">
                     <el-table-column label="商品图片" prop="image" align="center">
                         <template slot-scope="scope">
                             <el-image
@@ -136,7 +98,7 @@
                     <el-table-column prop="sn" label="货号" align="center"></el-table-column>
                     <el-table-column prop="brandName" label="品牌名" width="100" align="center"></el-table-column>
                     <el-table-column
-                        v-for="(val,index) in specArr"
+                        v-for="(val, index) in specArr"
                         :prop="val"
                         :label="val"
                         :key="index"
@@ -148,11 +110,7 @@
 
                     <el-table-column label="操作" width="120" align="center">
                         <template slot-scope="scope">
-                            <el-button
-                                type="text"
-                                icon="el-icon-view"
-                                @click="shouImage(scope.row)"
-                            >图片列表</el-button>
+                            <el-button type="text" icon="el-icon-view" @click="shouImage(scope.row)">图片列表</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -190,16 +148,10 @@ export default {
                 this.skuImageList = [];
             }
         },
-        getGoodsInfo(id) {
-            getGoodsInfo(id).then(res => {
+        async getGoodsInfo(id) {
+            await getGoodsInfo(id).then(res => {
                 if (res.code === 200) {
                     this.goods = res.data;
-                    this.$emit('get-spu', {
-                        id: this.goods.spu.id,
-                        auditStatus: this.goods.spu.auditStatus,
-                        auditInfo: this.goods.spu.auditInfo
-                    }); //向父组件传递审核状态
-
                     if (this.goods.spu) {
                         if (this.goods.spu.images) {
                             this.goods.spu.images = this.goods.spu.images.split(',');
@@ -230,6 +182,11 @@ export default {
                             this.specArr.push(key);
                         }
                     }
+                    this.$emit('get-spu', {
+                        id: this.goods.spu.id,
+                        auditStatus: this.goods.spu.auditStatus,
+                        auditInfo: this.goods.spu.auditInfo
+                    }); //向父组件传递审核状态
                 }
             });
         }

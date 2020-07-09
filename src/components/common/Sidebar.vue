@@ -67,12 +67,35 @@ export default {
                     title: '商品管理',
                     subs: [
                         {
-                            index: 'brand',
-                            title: '品牌管理'
-                        },
+                            index: 'goods',
+                            title: '商品列表'
+                        }
+                    ]
+                },
+                {
+                    icon: 'el-icon-goods',
+                    index: 'goodsAudit',
+                    title: '商品审核',
+                    subs: [
+                       
                         {
+                            index: 'goodsAuditList',
+                            title: '商品审核'
+                        }
+                    ]
+                },
+                 {
+                    icon: 'el-icon-s-grid',
+                    index: 'goodsSettings',
+                    title: '商品配置',
+                    subs: [
+                         {
                             index: 'category1',
                             title: '分类管理'
+                        },
+                        {
+                            index: 'brand',
+                            title: '品牌管理'
                         },
                         {
                             index: 'template',
@@ -85,32 +108,22 @@ export default {
                         {
                             index: 'para',
                             title: '参数列表'
-                        },
-                        {
-                            index: 'goods',
-                            title: '商品列表'
-                        },
-                        {
-                            index: 'goodsAuditList',
-                            title: '商品审核'
-                        },
+                        }
+
+
+                    ]
+                },
+                  {
+                    icon: 'el-icon-coin',
+                    index: 'store',
+                    title: '门店管理',
+                    subs: [
                         {
                             index: 'store',
                             title: '门店管理'
                         }
-                        // ,
-                        // {
-                        //     index: 'addGoodsCategory',
-                        //     title: '添加商品分类'
-                        // },
-                        // {
-                        //     index: 'addGoodsInfo',
-                        //     title: '添加商品信息'
-                        // },
-                        // {
-                        //     index: 'addGoodsAttr',
-                        //     title: '添加商品属性'
-                        // }
+
+
                     ]
                 },
                 {

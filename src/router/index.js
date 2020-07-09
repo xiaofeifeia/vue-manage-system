@@ -108,7 +108,7 @@ export default new Router({
                     meta: { title: '用户管理' }
                 }, {
                     path: '/brand',
-                    component: () => import('../page/goods/Brand.vue'),
+                    component: () => import('../page/goodsSettings/Brand.vue'),
                     meta: { title: '品牌管理' }
                 }, {
                     path: '/category1',
@@ -124,19 +124,19 @@ export default new Router({
                     meta: { title: '三级分类' }
                 }, {
                     path: '/template',
-                    component: () => import('../page/goods/Template.vue'),
+                    component: () => import('../page/goodsSettings/Template.vue'),
                     meta: {
                         title: '模板管理'
                     }
                 }, {
                     path: '/spec',
-                    component: () => import('../page/goods/Spec.vue'),
+                    component: () => import('../page/goodsSettings/Spec.vue'),
                     meta: {
                         title: '规格列表'
                     }
                 }, {
                     path: '/para',
-                    component: () => import('../page/goods/Para.vue'),
+                    component: () => import('../page/goodsSettings/Para.vue'),
                     meta: {
                         title: '参数列表'
                     }
@@ -162,29 +162,32 @@ export default new Router({
                     path: '/goods',
                     component: () => import('../page/goods/Goods.vue'),
                     meta: {
-                        title: '商品列表'
+                        title: '商品列表',
+                        keepAlive: false
+                    }
+                }, {
+                    path: '/goodsView',
+                    component: () => import('../page/goods/GoodsView.vue'),
+                    meta: {
+                        title: '商品查看',
+                        keepAlive: false
                     }
                 }, {
                     path: '/goodsAuditList',
-                    component: () => import('../page/goods/GoodsAuditList.vue'),
+                    component: () => import('../page/goodsAudit/GoodsAuditList.vue'),
                     meta: {
-                        title: '商品审核列表'
-                    }
-                }, {
-                    path: '/goodView',
-                    component: () => import('../page/goods/GoodsView.vue'),
-                    meta: {
-                        title: '商品查看'
+                        title: '商品审核列表',
+                        keepAlive: false
                     }
                 }, {
                     path: '/goodsAudit',
-                    component: () => import('../page/goods/GoodsAudit.vue'),
+                    component: () => import('../page/goodsAudit/GoodsAudit.vue'),
                     meta: {
                         title: '商品审核'
                     }
                 }, {
                     path: '/store',
-                    component: () => import('../page/goods/Store.vue'),
+                    component: () => import('../page/goodsSettings/Store.vue'),
                     meta: {
                         title: '门店管理'
                     }

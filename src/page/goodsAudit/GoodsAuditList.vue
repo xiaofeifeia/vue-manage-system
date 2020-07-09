@@ -2,19 +2,12 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 商品审核列表
-                </el-breadcrumb-item>
+                <el-breadcrumb-item> <i class="el-icon-lx-cascades"></i> 商品审核列表 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input
-                    v-model="query.name"
-                    placeholder="商品名称/商品货号"
-                    class="handle-input mr10"
-                    size="small"
-                ></el-input>
+                <el-input v-model="query.name" placeholder="商品名称/商品货号" class="handle-input mr10" size="small"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <el-table
@@ -28,36 +21,22 @@
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column label="商品图片" prop="image" align="center">
                     <template slot-scope="scope">
-                        <el-image
-                            class="table-td-thumb"
-                            :src="scope.row.image"
-                            :preview-src-list="[scope.row.image]"
-                        ></el-image>
+                        <el-image class="table-td-thumb" :src="scope.row.image" :preview-src-list="[scope.row.image]"></el-image>
                     </template>
                 </el-table-column>
                 <el-table-column prop="name" label="商品名" width="210" align="center"></el-table-column>
                 <el-table-column prop="brandName" label="品牌名" width="100" align="center"></el-table-column>
                 <el-table-column prop="sn" label="货号" align="center"></el-table-column>
                 <el-table-column prop="isMarketable" label="上架/下架" align="center">
-                    <template slot-scope="scope">
-                        <el-switch
-                            v-model="scope.row.isMarketable"
-                            active-color="#13ce66"
-                            inactive-color="#ff4949"
-                            active-value="1"
-                            inactive-value="0"
-                            @change="setMarketable(scope.row)"
-                        ></el-switch>
+                    <template scope="scope">
+                        <span v-if="scope.row.isMarketable === '0'" style="color: #67c23a">上架</span>
+                        <span v-else-if="scope.row.isMarketable === '1'" style="color:#e6a23c">下架</span>
+                        <span v-else-if="scope.row.isMarketable === '2'" style="color: #f56c6c">删除</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="num" label="库存" align="center"></el-table-column>
                 <el-table-column prop="saleNum" label="销量" align="center"></el-table-column>
-                <el-table-column
-                    prop="auditStatus"
-                    label="审核状态"
-                    align="center"
-                    :formatter="auditStatusFormatter"
-                ></el-table-column>
+                <el-table-column prop="auditStatus" label="审核状态" align="center" :formatter="auditStatusFormatter"></el-table-column>
 
                 <el-table-column label="操作" width="200" align="center">
                     <template slot-scope="scope">
@@ -138,9 +117,10 @@ export default {
         },
         goodsView(row) {
             this.$router.push({
-                path: './goodView',
+                path: './goodsView',
                 query: {
-                    id: row.id
+                    id: row.id,
+                    type: 'audit'
                 }
             });
         },
@@ -152,16 +132,6 @@ export default {
                 }
             });
         },
-        // 编辑操作
-        handleEdit(row) {
-            this.$router.push({
-                path: './addGoodsCategory',
-                query: {
-                    id: row.id
-                }
-            });
-        },
-
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageNum', val);
