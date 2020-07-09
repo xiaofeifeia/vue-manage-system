@@ -73,23 +73,22 @@ export default {
                     ]
                 },
                 {
-                    icon: 'el-icon-goods',
+                    icon: 'el-icon-tickets',
                     index: 'goodsAudit',
                     title: '商品审核',
                     subs: [
-                       
                         {
                             index: 'goodsAuditList',
                             title: '商品审核'
                         }
                     ]
                 },
-                 {
+                {
                     icon: 'el-icon-s-grid',
                     index: 'goodsSettings',
                     title: '商品配置',
                     subs: [
-                         {
+                        {
                             index: 'category1',
                             title: '分类管理'
                         },
@@ -109,12 +108,10 @@ export default {
                             index: 'para',
                             title: '参数列表'
                         }
-
-
                     ]
                 },
-                  {
-                    icon: 'el-icon-coin',
+                {
+                    icon: 'el-icon-s-shop',
                     index: 'store',
                     title: '门店管理',
                     subs: [
@@ -122,8 +119,6 @@ export default {
                             index: 'store',
                             title: '门店管理'
                         }
-
-
                     ]
                 },
                 {
