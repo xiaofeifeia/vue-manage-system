@@ -107,6 +107,10 @@ export default {
                         {
                             index: 'para',
                             title: '参数列表'
+                        },
+                        {
+                            index: 'banner',
+                            title: '首页轮播'
                         }
                     ]
                 },

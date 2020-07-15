@@ -191,6 +191,12 @@ export default new Router({
                     meta: {
                         title: '门店管理'
                     }
+                }, {
+                    path: '/banner',
+                    component: () => import('../page/goodsSettings/Banner.vue'),
+                    meta: {
+                        title: '首页轮播'
+                    }
                 }
             ]
         },
