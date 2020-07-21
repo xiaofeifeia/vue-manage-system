@@ -135,7 +135,7 @@ export default {
                         message: '请输入品牌名',
                         trigger: 'change'
                     },
-                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'change' }
+                    { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'change' }
                 ],
                 letter: [
                     {

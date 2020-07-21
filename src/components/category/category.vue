@@ -36,6 +36,16 @@
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="分类名" align="center"></el-table-column>
+                <el-table-column prop="caption" label="副标题" align="center"></el-table-column>
+                <el-table-column label="图片" align="center">
+                    <template slot-scope="scope">
+                        <el-image
+                            class="table-td-thumb"
+                            :src="scope.row.image"
+                            :preview-src-list="[scope.row.image]"
+                        ></el-image>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="level" label="级别" align="center"></el-table-column>
                 <el-table-column prop="goodsNum" label="商品数量" align="center"></el-table-column>
                 <el-table-column label="导航栏" align="center">
@@ -117,6 +127,13 @@
                         class="handle-input"
                     ></el-input>
                 </el-form-item>
+                <el-form-item label="副标题" required prop="caption">
+                    <el-input
+                        v-model="categoryForm.caption"
+                        placeholder="请输入副标题"
+                        class="handle-input"
+                    ></el-input>
+                </el-form-item>
                 <el-form-item label="上级分类">
                     <el-select
                         v-model="categoryForm.parentId"
@@ -131,6 +148,19 @@
                             :value="item.id"
                         ></el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="图片">
+                    <el-upload
+                        action="http://localhost:8874/upload"
+                        :on-remove="handleUploadRemove"
+                        :on-success="handleUploadSuccess"
+                        :before-upload="handleUploadBefore"
+                        :file-list="fileList"
+                        list-type="picture"
+                    >
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1M</div>
+                    </el-upload>
                 </el-form-item>
                 <el-form-item label="排序">
                     <el-input
@@ -188,6 +218,8 @@ import {
     updateIsMenu
 } from '../../api/category';
 import { listAllTemplate } from '../../api/template';
+import { upload } from '../../api/upload';
+
 export default {
     name: 'CategoryComponent',
     data() {
@@ -202,6 +234,7 @@ export default {
             allTemplate: [],
             categoryList: [],
             multipleSelection: [],
+            fileList: [],
             editVisible: false,
             total: 0,
             categoryForm: {
@@ -217,7 +250,7 @@ export default {
                         message: '请输入分类名',
                         trigger: 'change'
                     },
-                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'change' }
+                    { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'change' }
                 ],
                 isShow: [
                     {
@@ -271,6 +304,34 @@ export default {
                     this.$message.error(res.message);
                 }
             });
+        },
+        handleUploadRemove(file, fileList) {
+            this.fileList = [];
+            this.categoryForm.image = '';
+        },
+        handleUploadSuccess(res) {
+            //后台返回数据
+            if (res.code === 200) {
+                this.fileList.push(res.data);
+                this.categoryForm.image = res.data.url;
+                this.$message.success('上传成功');
+            } else {
+                this.$message.error('上传失败');
+            }
+        },
+        handleUploadBefore(file) {
+            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+            const isLt1M = file.size / 1024 / 1024 < 1;
+
+            if (!isJPG) {
+                this.$message.error('上传头像图片只能是 JPG,PNG 格式!');
+                return false;
+            }
+            if (!isLt1M) {
+                this.$message.error('上传头像图片大小不能超过 1MB!');
+                return false;
+            }
+            return true;
         },
         // 触发搜索按钮
         handleSearch() {
