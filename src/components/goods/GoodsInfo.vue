@@ -96,16 +96,17 @@
                     </el-table-column>
                     <el-table-column prop="name" label="商品名" width="200" align="center"></el-table-column>
                     <el-table-column prop="sn" label="货号" align="center"></el-table-column>
-                    <el-table-column prop="brandName" label="品牌名" width="100" align="center"></el-table-column>
+                    <el-table-column prop="brandName" label="品牌名" width="150" align="center"></el-table-column>
+                    <el-table-column prop="price" label="价格" width="150" align="center"></el-table-column>
                     <el-table-column
                         v-for="(val, index) in specArr"
                         :prop="val"
                         :label="val"
                         :key="index"
                         align="center"
-                        width="100"
+                        width="120"
                     ></el-table-column>
-                    <el-table-column prop="num" label="库存" align="center"></el-table-column>
+                    <el-table-column prop="num" label="库存" width="150" align="center"></el-table-column>
                     <el-table-column prop="saleNum" label="销量" align="center"></el-table-column>
 
                     <el-table-column label="操作" width="120" align="center">

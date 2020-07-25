@@ -53,10 +53,10 @@ export const listAllCategory = () => {
     });
 };
 
-export const updateIsMenu = (params) => {
+export const updateIsNav = (params) => {
 
     return request({
-        url: '/category/updateIsMenu/' + params.id + "?isMenu=" + params.isMenu,
+        url: '/category/updateIsNav/' + params.id + "?isNav=" + params.isNav,
         method: 'post'
     });
 };
@@ -65,6 +65,14 @@ export const updateIsShow = (params) => {
 
     return request({
         url: '/category/updateIsShow/' + params.id + "?isShow=" + params.isShow,
+        method: 'post'
+    });
+};
+
+export const updateIsHot = (params) => {
+
+    return request({
+        url: '/category/updateIsHot/' + params.id + "?isHot=" + params.isHot,
         method: 'post'
     });
 };

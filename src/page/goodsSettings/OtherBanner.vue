@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 轮播图
+                    <i class="el-icon-lx-cascades"></i> 其他图片
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -33,7 +33,14 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                <!-- <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column> -->
+                <el-table-column
+                    prop="type"
+                    label="类型"
+                    width="100"
+                    align="center"
+                    :formatter="typeFormatter"
+                ></el-table-column>
                 <el-table-column label="图片" align="center">
                     <template slot-scope="scope">
                         <el-image
@@ -81,6 +88,13 @@
                 <el-form-item label="标题" required prop="title">
                     <el-input v-model="bannerForm.title" placeholder="请输入轮播标题"></el-input>
                 </el-form-item>
+                <el-form-item label="类型" required prop="type">
+                    <el-select v-model="bannerForm.type" placeholder="请选择">
+                        <el-option :value="1" label="新品图"></el-option>
+                        <el-option :value="2" label="推荐图"></el-option>
+                        <el-option :value="3" label="热门图"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="url">
                     <el-input v-model="bannerForm.url" placeholder="请输入路径"></el-input>
                 </el-form-item>
@@ -118,8 +132,8 @@ export default {
     data() {
         return {
             query: {
+                noType: 0,
                 name: '',
-                type: 0,
                 pageNum: 1,
                 pageSize: 10
             },
@@ -239,7 +253,6 @@ export default {
         },
         //添加操作
         async add() {
-            this.bannerForm.type = 0;
             await add(this.bannerForm).then(res => {
                 if (res.code === 200) {
                     this.$message.success('添加成功');
@@ -252,7 +265,6 @@ export default {
         },
         //修改操作
         async update() {
-            this.bannerForm.type = 0;
             await update(this.bannerForm).then(res => {
                 if (res.code === 200) {
                     this.$message.success(`修改成功`);
@@ -306,7 +318,18 @@ export default {
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageNum', val);
-            this.getbannerPage();
+            this.getBannerPage();
+        },
+        typeFormatter(row) {
+            if (row.type === 0) {
+                return '轮播图';
+            } else if (row.type === 1) {
+                return '新品图';
+            } else if (row.type === 2) {
+                return '推荐图';
+            } else if (row.type === 3) {
+                return '热门图';
+            }
         }
     }
 };

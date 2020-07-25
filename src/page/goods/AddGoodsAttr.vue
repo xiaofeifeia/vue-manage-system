@@ -378,6 +378,7 @@ export default {
             }
 
             this.iterSpecItems(check);
+            console.log('skus-->' + JSON.stringify(this.goods.skus));
         },
         iterSpecItems(check) {
             //遍历
@@ -404,6 +405,7 @@ export default {
                 });
                 return array;
             });
+            console.log('resultList-->' + JSON.stringify(resultList));
             this.checkSpecDatas = [];
             let containSpecArr = [];
             if (this.goods.skus && this.goods.skus.length > 0) {

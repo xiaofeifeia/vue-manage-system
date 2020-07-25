@@ -107,6 +107,14 @@ export default new Router({
                     component: () => import('../page/User.vue'),
                     meta: { title: '用户管理' }
                 }, {
+                    path: '/dict',
+                    component: () => import('../page/Dict.vue'),
+                    meta: { title: '字典管理' }
+                }, {
+                    path: '/dictItem',
+                    component: () => import('../page/DictItem.vue'),
+                    meta: { title: '字典条目管理' }
+                }, {
                     path: '/brand',
                     component: () => import('../page/goodsSettings/Brand.vue'),
                     meta: { title: '品牌管理' }
@@ -166,6 +174,13 @@ export default new Router({
                         keepAlive: false
                     }
                 }, {
+                    path: '/spu',
+                    component: () => import('../page/goods/Spu.vue'),
+                    meta: {
+                        title: 'spu列表',
+                        keepAlive: false
+                    }
+                }, {
                     path: '/goodsView',
                     component: () => import('../page/goods/GoodsView.vue'),
                     meta: {
@@ -196,6 +211,12 @@ export default new Router({
                     component: () => import('../page/goodsSettings/Banner.vue'),
                     meta: {
                         title: '首页轮播'
+                    }
+                }, {
+                    path: '/otherBanner',
+                    component: () => import('../page/goodsSettings/OtherBanner.vue'),
+                    meta: {
+                        title: '其他图片'
                     }
                 }
             ]

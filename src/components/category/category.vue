@@ -51,10 +51,20 @@
                 <el-table-column label="导航栏" align="center">
                     <template slot-scope="scope">
                         <el-switch
-                            v-model="scope.row.isMenu"
+                            v-model="scope.row.isNav"
                             active-color="#13ce66"
                             inactive-color="#ff4949"
-                            @change="updateIsMenu(scope.row)"
+                            @change="updateIsNav(scope.row)"
+                        ></el-switch>
+                    </template>
+                </el-table-column>
+                <el-table-column label="热门" align="center">
+                    <template slot-scope="scope">
+                        <el-switch
+                            v-model="scope.row.isHot"
+                            active-color="#13ce66"
+                            inactive-color="#ff4949"
+                            @change="updateIsHot(scope.row)"
                         ></el-switch>
                     </template>
                 </el-table-column>
@@ -176,8 +186,14 @@
                         <el-radio :label="false">否</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="是否显示在导航栏" required prop="isMenu">
-                    <el-radio-group v-model="categoryForm.isMenu">
+                <el-form-item label="是否首页导航栏" required prop="isNav">
+                    <el-radio-group v-model="categoryForm.isNav">
+                        <el-radio :label="true">是</el-radio>
+                        <el-radio :label="false">否</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="是否首页热门" required prop="isHot">
+                    <el-radio-group v-model="categoryForm.isHot">
                         <el-radio :label="true">是</el-radio>
                         <el-radio :label="false">否</el-radio>
                     </el-radio-group>
@@ -215,7 +231,8 @@ import {
     deleteCategorys,
     listAllCategory,
     updateIsShow,
-    updateIsMenu
+    updateIsNav,
+    updateIsHot
 } from '../../api/category';
 import { listAllTemplate } from '../../api/template';
 import { upload } from '../../api/upload';
@@ -239,7 +256,7 @@ export default {
             total: 0,
             categoryForm: {
                 isShow: true,
-                isMenu: true
+                isNav: true
             },
             showIndex: -1,
             title: '创建',
@@ -259,7 +276,7 @@ export default {
                         trigger: 'change'
                     }
                 ],
-                isMenu: [
+                isNav: [
                     {
                         required: true,
                         message: '是否显示在导航栏',
@@ -344,7 +361,7 @@ export default {
         handleAdd() {
             this.categoryForm = {
                 isShow: true,
-                isMenu: true,
+                isNav: true,
                 parentId: 0
             };
             this.selectCategory = [{ id: 0, name: '根分类' }];
@@ -361,7 +378,7 @@ export default {
         },
         addChildren(index, row) {
             this.selectCategory = [{ id: row.id, name: row.name }];
-            this.categoryForm = { isShow: true, isMenu: true, parentId: row.id };
+            this.categoryForm = { isShow: true, isNav: true, parentId: row.id };
             this.title = '添加' + row.name + '下家';
             this.editVisible = true;
         },
@@ -380,7 +397,7 @@ export default {
             });
         },
         resetForm() {
-            this.categoryForm = { isShow: true, isMenu: true };
+            this.categoryForm = { isShow: true, isNav: true };
             this.$refs['categoryForm'].resetFields();
         },
         //添加操作
@@ -466,8 +483,17 @@ export default {
                 }
             });
         },
-        updateIsMenu(row) {
-            updateIsMenu(row).then(res => {
+         updateIsHot(row) {
+            updateIsHot(row).then(res => {
+                if (res.code === 200) {
+                    this.handleSearch();
+                } else {
+                    this.$message.error(res.message);
+                }
+            });
+        },
+        updateIsNav(row) {
+            updateIsNav(row).then(res => {
                 if (res.code === 200) {
                     this.handleSearch();
                 } else {

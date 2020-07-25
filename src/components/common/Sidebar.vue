@@ -67,6 +67,10 @@ export default {
                     title: '商品管理',
                     subs: [
                         {
+                            index: 'spu',
+                            title: 'spu列表'
+                        },
+                        {
                             index: 'goods',
                             title: '商品列表'
                         }
@@ -107,10 +111,21 @@ export default {
                         {
                             index: 'para',
                             title: '参数列表'
-                        },
+                        }
+                    ]
+                },
+                {
+                    icon: 'el-icon-picture',
+                    index: 'first',
+                    title: '首页配置',
+                    subs: [
                         {
                             index: 'banner',
                             title: '首页轮播'
+                        },
+                        {
+                            index: 'otherBanner',
+                            title: '其他图片'
                         }
                     ]
                 },

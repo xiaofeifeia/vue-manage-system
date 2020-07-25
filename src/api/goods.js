@@ -34,10 +34,19 @@ export const createOrUpdateGoods = (goods) => {
     });
 };
 
-export const findGoodsPage = (params) => {
+export const findSpuPage = (params) => {
 
     return request({
-        url: '/goods/findPage/' + params.pageNum + "/" + params.pageSize,
+        url: '/goods/findSpuPage/' + params.pageNum + "/" + params.pageSize,
+        method: 'post',
+        data: params
+    });
+};
+
+export const findSkuPage = (params) => {
+
+    return request({
+        url: '/goods/findSkuPage/' + params.pageNum + "/" + params.pageSize,
         method: 'post',
         data: params
     });
@@ -81,6 +90,30 @@ export const getGoodsInfo = (id) => {
 
     return request({
         url: '/goods/getGoodsInfo/' + id,
+        method: 'post'
+    });
+};
+
+export const setHot = (params) => {
+
+    return request({
+        url: '/goods/setHot/' + params.id + "?isHot=" + params.isHot,
+        method: 'post'
+    });
+};
+
+export const setNew = (params) => {
+
+    return request({
+        url: '/goods/setNew/' + params.id + "?isNew=" + params.isNew,
+        method: 'post'
+    });
+};
+
+export const setRecommend = (params) => {
+
+    return request({
+        url: '/goods/setRecommend/' + params.id + "?isRecommend=" + params.isRecommend,
         method: 'post'
     });
 };

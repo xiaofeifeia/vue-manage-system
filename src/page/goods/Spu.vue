@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 商品列表
+                    <i class="el-icon-lx-cascades"></i> spu列表
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -45,8 +45,6 @@
                 <el-table-column prop="name" label="商品名" width="210" align="center"></el-table-column>
                 <el-table-column prop="brandName" label="品牌名" width="100" align="center"></el-table-column>
                 <el-table-column prop="sn" label="货号" align="center"></el-table-column>
-                <el-table-column prop="price" label="价格" align="center"></el-table-column>
-                <el-table-column prop="oldPrice" label="上次价格" align="center"></el-table-column>
                 <el-table-column prop="isMarketable" label="上架/下架" align="center">
                     <template slot-scope="scope">
                         <el-switch
@@ -56,42 +54,6 @@
                             active-value="1"
                             inactive-value="0"
                             @change="setMarketable(scope.row)"
-                        ></el-switch>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="isNew" label="新品" align="center">
-                    <template slot-scope="scope">
-                        <el-switch
-                            v-model="scope.row.isNew"
-                            active-color="#13ce66"
-                            inactive-color="#ff4949"
-                            :active-value="true"
-                            :inactive-value="true"
-                            @change="setNew(scope.row)"
-                        ></el-switch>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="isHot" label="热门" align="center">
-                    <template slot-scope="scope">
-                        <el-switch
-                            v-model="scope.row.isHot"
-                            active-color="#13ce66"
-                            inactive-color="#ff4949"
-                            :active-value="true"
-                            :inactive-value="false"
-                            @change="setHot(scope.row)"
-                        ></el-switch>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="isRecommend" label="推荐" align="center">
-                    <template slot-scope="scope">
-                        <el-switch
-                            v-model="scope.row.isRecommend"
-                            active-color="#13ce66"
-                            inactive-color="#ff4949"
-                            :active-value="true"
-                            :inactive-value="false"
-                            @change="setRecommend(scope.row)"
                         ></el-switch>
                     </template>
                 </el-table-column>
@@ -132,7 +94,7 @@
 </template>
 
 <script>
-import { findSkuPage, setMarketable, deleteGoods, deleteGoodsList, auditGoods, getGoodsInfo,update,setRecommend,setHot,setNew } from '../../api/goods';
+import { findSpuPage, setMarketable, deleteGoods, deleteGoodsList, auditGoods, getGoodsInfo } from '../../api/goods';
 export default {
     name: 'GoodsTable',
     data() {
@@ -172,7 +134,7 @@ export default {
         //计算属性
     },
     created() {
-        this.findSkuPage();
+        this.findSpuPage();
     },
     methods: {
         auditStatusFormatter(row, column) {
@@ -187,8 +149,8 @@ export default {
             }
         },
         // 获取 easy-mock 的模拟数据
-        findSkuPage() {
-            findSkuPage(this.query).then(res => {
+        findSpuPage() {
+            findSpuPage(this.query).then(res => {
                 if (res.code == 200) {
                     this.goodsList = res.data.list;
                     this.total = res.data.total || 0;
@@ -289,44 +251,11 @@ export default {
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageNum', val);
-            this.findSkuPage();
+            this.getGoodsPage();
         },
         // 上架下架
         setMarketable(row) {
             setMarketable(row).then(res => {
-                if (res.code === 200) {
-                    this.$message.success('修改成功');
-                    this.handleSearch();
-                } else {
-                    this.$message.error(res.message);
-                }
-            });
-        },
-        // 新品
-        setNew(row) {
-            setNew(row).then(res => {
-                if (res.code === 200) {
-                    this.$message.success('修改成功');
-                    this.handleSearch();
-                } else {
-                    this.$message.error(res.message);
-                }
-            });
-        },
-        // 热门
-        setHot(row) {
-            setHot(row).then(res => {
-                if (res.code === 200) {
-                    this.$message.success('修改成功');
-                    this.handleSearch();
-                } else {
-                    this.$message.error(res.message);
-                }
-            });
-        },
-        // 推荐
-        setRecommend(row) {
-            setRecommend(row).then(res => {
                 if (res.code === 200) {
                     this.$message.success('修改成功');
                     this.handleSearch();
